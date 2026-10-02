@@ -1,0 +1,370 @@
+/* ---------- Telas de intervalo: base ---------- */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+.telas { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; }
+
+.tela {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transicao, .6s) ease, visibility 0s linear var(--transicao, .6s);
+  color: var(--ct);
+  font-family: var(--fonte), 'Outfit', sans-serif;
+  background: var(--c1);
+  overflow: hidden;
+}
+.tela.on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--transicao, .6s) ease, visibility 0s;
+}
+
+/* Animações CSS só rodam na tela ativa (economiza CPU no OBS). */
+.tela:not(.on) *, .tela:not(.on) *::before, .tela:not(.on) *::after { animation-play-state: paused !important; }
+
+.tpl { position: absolute; inset: 0; overflow: hidden; }
+.tpl i { position: absolute; display: block; }
+
+/* imagem do usuário: cobre a tela, com opacidade baixa, acima do template e
+   abaixo do texto */
+.fundo-img {
+  position: absolute;
+  inset: 0;
+  background: var(--img) center / cover no-repeat;
+  opacity: var(--img-op, .25);
+}
+
+.conteudo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px;
+  /* a escala amplia título, subtítulo e a distância entre eles na mesma proporção */
+  gap: calc(var(--sub-gap, 18px) * var(--escala, 1));
+}
+
+.titulo {
+  margin: 0;
+  font-size: calc(var(--titulo-px, 150px) * var(--escala, 1));
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: .02em;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, .35);
+  white-space: pre-wrap;
+}
+.titulo span { display: inline-block; }
+
+.sub {
+  margin: 0;
+  font-family: inherit; /* a mesma fonte do título */
+  font-size: calc(var(--sub-px, 44px) * var(--escala, 1));
+  font-weight: 600;
+  opacity: .92;
+  text-shadow: 0 3px 16px rgba(0, 0, 0, .35);
+}
+.sub:empty { display: none; }
+
+/* ---------- Animações do texto ---------- */
+
+.anim-pulsar .titulo { animation: t-pulsar 2.2s ease-in-out infinite; }
+@keyframes t-pulsar { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+.anim-flutuar .titulo { animation: t-flutuar 3.6s ease-in-out infinite; }
+.anim-flutuar .sub { animation: t-flutuar 3.6s ease-in-out .3s infinite; }
+@keyframes t-flutuar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-22px); } }
+
+.anim-deslizar .titulo { animation: t-deslizar 5s cubic-bezier(.7, 0, .3, 1) infinite; }
+@keyframes t-deslizar {
+  0% { transform: translateX(-120vw); opacity: 0; }
+  18% { transform: translateX(0); opacity: 1; }
+  82% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(120vw); opacity: 0; }
+}
+
+.anim-digitando .titulo::after { content: '▌'; margin-left: .04em; animation: t-cursor .8s steps(1) infinite; }
+@keyframes t-cursor { 50% { opacity: 0; } }
+
+.anim-glitch .titulo { position: relative; animation: t-glitch-skew 4s steps(1) infinite; }
+.anim-glitch .titulo::before, .anim-glitch .titulo::after {
+  content: attr(data-glitch);
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%;
+  overflow: hidden;
+  clip-path: inset(0 0 0 0);
+}
+.anim-glitch .titulo::before { color: var(--c2); left: 4px; text-shadow: -3px 0 #f0f; animation: t-glitch-1 2.5s steps(1) infinite; }
+.anim-glitch .titulo::after { color: var(--ct); left: -4px; text-shadow: 3px 0 #0ff; animation: t-glitch-2 3s steps(1) infinite; }
+@keyframes t-glitch-skew { 0%, 92%, 100% { transform: skewX(0); } 94% { transform: skewX(6deg); } 96% { transform: skewX(-4deg); } }
+@keyframes t-glitch-1 {
+  0%, 100% { clip-path: inset(0 0 100% 0); }
+  10% { clip-path: inset(10% 0 60% 0); } 12% { clip-path: inset(0 0 100% 0); }
+  40% { clip-path: inset(70% 0 5% 0); } 43% { clip-path: inset(0 0 100% 0); }
+  75% { clip-path: inset(35% 0 40% 0); } 78% { clip-path: inset(0 0 100% 0); }
+}
+@keyframes t-glitch-2 {
+  0%, 100% { clip-path: inset(100% 0 0 0); }
+  20% { clip-path: inset(50% 0 20% 0); } 23% { clip-path: inset(100% 0 0 0); }
+  55% { clip-path: inset(5% 0 80% 0); } 58% { clip-path: inset(100% 0 0 0); }
+  85% { clip-path: inset(60% 0 10% 0); } 88% { clip-path: inset(100% 0 0 0); }
+}
+
+.anim-saltando .titulo span { animation: t-saltar 1.6s cubic-bezier(.36, 0, .2, 1) calc(var(--i) * .07s) infinite; }
+@keyframes t-saltar { 0%, 30%, 100% { transform: translateY(0); } 15% { transform: translateY(-.28em) scale(1.08); } }
+
+.anim-brilho .titulo {
+  background: linear-gradient(110deg, var(--ct) 0 40%, var(--c2) 50%, var(--ct) 60% 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  animation: t-brilho 3s linear infinite;
+}
+@keyframes t-brilho { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+
+.anim-zoom .titulo { animation: t-zoom 4s ease-in-out infinite; }
+@keyframes t-zoom { 0%, 100% { transform: scale(.92); letter-spacing: .02em; } 50% { transform: scale(1.12); letter-spacing: .06em; } }
+
+/* ---------- Templates ---------- */
+
+/* Gradiente fluido: as duas cores escorrendo em diagonal. */
+.tpl-gradiente { background: linear-gradient(120deg, var(--c1), var(--c2), var(--c1), var(--c2)); background-size: 300% 300%; animation: g-fluir 12s ease-in-out infinite; }
+@keyframes g-fluir { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+.tpl-gradiente .tpl i:nth-child(1), .tpl-gradiente .tpl i:nth-child(2) {
+  width: 900px; height: 900px; border-radius: 50%; filter: blur(80px); opacity: .45; background: var(--c2);
+  animation: g-bolha 14s ease-in-out infinite alternate;
+}
+.tpl-gradiente .tpl i:nth-child(1) { left: -300px; top: -300px; }
+.tpl-gradiente .tpl i:nth-child(2) { right: -300px; bottom: -300px; background: var(--c1); animation-delay: -7s; }
+@keyframes g-bolha { from { transform: translate(0, 0) scale(1); } to { transform: translate(200px, 120px) scale(1.25); } }
+
+/* Ondas: dois discos gigantes girando devagar fazem a linha d'água. */
+.tpl-ondas { background: linear-gradient(180deg, var(--c1), color-mix(in srgb, var(--c1) 70%, #000)); }
+.tpl-ondas .tpl i:nth-child(1), .tpl-ondas .tpl i:nth-child(2), .tpl-ondas .tpl i:nth-child(3) {
+  left: 50%; top: 62%;
+  width: 3400px; height: 3400px;
+  margin-left: -1700px;
+  border-radius: 43%;
+  background: var(--c2);
+  opacity: .35;
+  animation: o-girar 22s linear infinite;
+}
+.tpl-ondas .tpl i:nth-child(2) { border-radius: 45%; opacity: .3; animation-duration: 30s; animation-direction: reverse; top: 66%; }
+.tpl-ondas .tpl i:nth-child(3) { border-radius: 41%; opacity: .5; animation-duration: 17s; top: 70%; }
+@keyframes o-girar { to { transform: rotate(360deg); } }
+
+/* Estrelas: pontos (box-shadow gerado no JS) subindo em três velocidades. */
+.tpl-estrelas { background: radial-gradient(ellipse at 50% 120%, color-mix(in srgb, var(--c2) 45%, transparent), transparent 60%), radial-gradient(ellipse at top, color-mix(in srgb, var(--c1) 80%, #000), #05060c); }
+.tpl-estrelas .tpl i { top: 0; left: 0; border-radius: 50%; background: transparent; animation: e-subir linear infinite; }
+.tpl-estrelas .tpl i:nth-child(1) { animation-duration: 90s; opacity: .7; }
+.tpl-estrelas .tpl i:nth-child(2) { animation-duration: 60s; opacity: .85; }
+.tpl-estrelas .tpl i:nth-child(3) { animation-duration: 40s; }
+@keyframes e-subir { to { transform: translateY(-1080px); } }
+
+/* Synthwave: céu roxo com estrelas, sol laranja listrado, horizonte neon e
+   chão em grade rosa/ciano rolando. Paleta própria; cor principal tinge o chão. */
+.tpl-grade-retro {
+  background:
+    radial-gradient(1px 1px at 12% 18%, #fff 60%, transparent 61%), radial-gradient(1px 1px at 28% 8%, #fff 60%, transparent 61%),
+    radial-gradient(1.5px 1.5px at 44% 24%, #fff 60%, transparent 61%), radial-gradient(1px 1px at 61% 12%, #fff 60%, transparent 61%),
+    radial-gradient(1.5px 1.5px at 76% 30%, #fff 60%, transparent 61%), radial-gradient(1px 1px at 88% 9%, #fff 60%, transparent 61%),
+    radial-gradient(1px 1px at 8% 40%, #fff 60%, transparent 61%), radial-gradient(1px 1px at 93% 38%, #fff 60%, transparent 61%),
+    linear-gradient(180deg, #0b0221 0%, #2a0a4f 35%, #6a1b9a 52%, #ff2975 56%, #12031f 56.2%, #060111 100%);
+}
+.tpl-grade-retro .tpl i:nth-child(1) {
+  left: 50%; top: 14%; width: 640px; height: 640px; margin-left: -320px; border-radius: 50%;
+  background: linear-gradient(180deg, #ffe45c 0%, #ffb01f 35%, #ff6a2f 60%, #ff2975 100%);
+  -webkit-mask: linear-gradient(#000 0 58%, transparent 58%), repeating-linear-gradient(180deg, transparent 0 30px, #000 30px 36px, transparent 36px 44px, #000 44px 52px);
+  -webkit-mask-composite: source-over;
+  mask: linear-gradient(#000 0 58%, transparent 58%), repeating-linear-gradient(180deg, transparent 0 30px, #000 30px 36px, transparent 36px 44px, #000 44px 52px);
+  mask-composite: add;
+  filter: drop-shadow(0 0 40px rgba(255, 106, 47, .8)) drop-shadow(0 0 90px rgba(255, 41, 117, .6));
+  animation: r-sol 7s ease-in-out infinite alternate;
+}
+@keyframes r-sol { to { transform: translateY(14px); } }
+.tpl-grade-retro .tpl i:nth-child(2) {
+  left: 0; top: 56%; width: 100%; height: 6px;
+  background: #4ff5ff; box-shadow: 0 0 18px #4ff5ff, 0 0 60px #ff2975;
+}
+.tpl-grade-retro .tpl i:nth-child(3) {
+  left: -50%; top: 56.3%; width: 200%; height: 100%;
+  background:
+    linear-gradient(90deg, transparent 0 calc(100% - 3px), #ff2975 calc(100% - 3px)) 0 0 / 110px 100%,
+    linear-gradient(180deg, transparent 0 calc(100% - 3px), #4ff5ff calc(100% - 3px)) 0 0 / 100% 110px,
+    linear-gradient(180deg, color-mix(in srgb, var(--c1) 35%, #12031f), #060111);
+  transform-origin: 50% 0;
+  transform: perspective(520px) rotateX(64deg);
+  animation: r-chao 1.4s linear infinite;
+}
+@keyframes r-chao { to { background-position: 0 110px, 0 110px, 0 0; } }
+.tpl-grade-retro .tpl i:nth-child(4) {
+  left: 0; top: 40%; width: 100%; height: 17%;
+  background: linear-gradient(180deg, transparent, rgba(255, 41, 117, .35));
+}
+.tpl-grade-retro .conteudo { justify-content: flex-start; padding-top: 150px; }
+.tpl-grade-retro .titulo { color: #fff; text-shadow: 0 0 12px #ff2975, 0 0 40px #ff2975, var(--sombra-d) var(--sombra-d) 0 #6a1b9a; }
+.tpl-grade-retro .sub { color: #4ff5ff; text-shadow: 0 0 10px #4ff5ff, 0 0 30px #4ff5ff; }
+
+/* Neon: escuro, moldura e letreiro piscando. */
+.tpl-neon { background: radial-gradient(ellipse at center, #14101f, #050408); }
+.tpl-neon .tpl i:nth-child(1) {
+  inset: 120px 200px; border: 6px solid var(--c1); border-radius: 40px;
+  box-shadow: 0 0 30px var(--c1), inset 0 0 30px var(--c1);
+  animation: n-piscar 5s steps(1) infinite;
+}
+.tpl-neon .titulo {
+  color: var(--ct);
+  text-shadow: 0 0 8px var(--ct), 0 0 24px var(--c1), 0 0 60px var(--c1), 0 0 120px var(--c1);
+  animation: n-piscar 4s steps(1) infinite;
+}
+.tpl-neon .sub { color: var(--c2); text-shadow: 0 0 12px var(--c2), 0 0 40px var(--c2); }
+@keyframes n-piscar { 0%, 100% { opacity: 1; } 91% { opacity: 1; } 92% { opacity: .35; } 93% { opacity: 1; } 96% { opacity: .6; } 97% { opacity: 1; } }
+
+/* Blocos: metade de cor, diagonal deslizando, título gigante à esquerda. */
+.tpl-blocos { background: var(--c2); }
+.tpl-blocos .tpl i:nth-child(1) { left: -20%; top: -20%; width: 75%; height: 140%; background: var(--c1); transform: skewX(-14deg); animation: b-mover 8s ease-in-out infinite alternate; }
+.tpl-blocos .tpl i:nth-child(2) { right: -10%; bottom: -30%; width: 40%; height: 80%; background: color-mix(in srgb, var(--c1) 50%, var(--c2)); transform: rotate(18deg); border-radius: 60px; animation: b-mover 11s ease-in-out infinite alternate-reverse; }
+.tpl-blocos .tpl i:nth-child(3) { right: 8%; top: 10%; width: 220px; height: 220px; border: 24px solid var(--c1); border-radius: 50%; animation: t-flutuar 5s ease-in-out infinite; }
+@keyframes b-mover { to { transform: skewX(-14deg) translateX(120px); } }
+.tpl-blocos .conteudo { align-items: flex-start; text-align: left; padding: 120px 160px; }
+.tpl-blocos .titulo { letter-spacing: -.02em; }
+
+/* Minimalista: fundo liso, linha fina que cresce, título espaçado. */
+.tpl-minimal { background: var(--c2); }
+.tpl-minimal .titulo { font-weight: 700; letter-spacing: .18em; text-shadow: none; font-size: calc(var(--titulo-px, 150px) * var(--escala, 1) * .7); }
+.tpl-minimal .sub { text-shadow: none; opacity: .7; letter-spacing: .08em; font-weight: 500; font-size: calc(32px * var(--escala, 1)); }
+.tpl-minimal .tpl i:nth-child(1) { left: 50%; top: calc(50% - 150px); height: 3px; width: 320px; margin-left: -160px; background: var(--c1); animation: m-linha 3s ease-in-out infinite alternate; }
+.tpl-minimal .tpl i:nth-child(2) { left: 50%; top: calc(50% + 150px); height: 3px; width: 320px; margin-left: -160px; background: var(--c1); animation: m-linha 3s ease-in-out infinite alternate-reverse; }
+@keyframes m-linha { from { transform: scaleX(.3); } to { transform: scaleX(1); } }
+
+/* Glitch de TV: a tela inteira treme, rasga em fatias, muda de cor, com
+   scanlines, barras de ruído e separação RGB no texto. */
+.tpl-glitch { background: #07070c; animation: gl-tela 3.1s steps(1) infinite; }
+@keyframes gl-tela {
+  0%, 100% { transform: translate(0, 0); filter: none; }
+  6% { transform: translate(-8px, 2px); filter: hue-rotate(40deg) contrast(1.3); }
+  7% { transform: translate(6px, -3px) skewX(3deg); }
+  8% { transform: none; filter: none; }
+  41% { transform: translate(10px, 0); filter: invert(1) hue-rotate(180deg); }
+  42% { transform: translate(-6px, 4px); filter: none; }
+  43% { transform: none; }
+  73% { transform: scaleY(1.03) translateY(-6px); filter: saturate(3); }
+  75% { transform: none; filter: none; }
+}
+.tpl-glitch .tpl i:nth-child(1) { inset: 0; background: repeating-linear-gradient(180deg, rgba(255, 255, 255, .07) 0 2px, transparent 2px 5px); animation: gl-scan 6s linear infinite; }
+.tpl-glitch .tpl i:nth-child(2) { inset: 0; background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, .85)); }
+.tpl-glitch .tpl i:nth-child(3) { left: 0; width: 100%; height: 140px; top: -140px; background: linear-gradient(180deg, transparent, rgba(255, 255, 255, .18), transparent); animation: gl-faixa 2.7s linear infinite; }
+/* barras de ruído: fatias coloridas que aparecem e somem em posições fixas */
+.tpl-glitch .tpl i:nth-child(4), .tpl-glitch .tpl i:nth-child(5), .tpl-glitch .tpl i:nth-child(6) {
+  left: 0; width: 100%; height: 34px; opacity: 0;
+  background: repeating-linear-gradient(90deg, var(--c1) 0 8%, transparent 8% 12%, var(--c2) 12% 25%, transparent 25% 31%, #fff 31% 33%, transparent 33% 50%);
+  mix-blend-mode: screen;
+  animation: gl-barra 2.3s steps(1) infinite;
+}
+.tpl-glitch .tpl i:nth-child(4) { top: 18%; }
+.tpl-glitch .tpl i:nth-child(5) { top: 47%; height: 60px; animation-delay: -.8s; animation-duration: 3.4s; }
+.tpl-glitch .tpl i:nth-child(6) { top: 76%; height: 22px; animation-delay: -1.5s; animation-duration: 1.9s; }
+@keyframes gl-barra {
+  0%, 100% { opacity: 0; transform: translateX(0); }
+  10% { opacity: 1; transform: translateX(-40px); }
+  13% { opacity: 0; }
+  55% { opacity: 1; transform: translateX(60px) scaleY(1.6); }
+  58% { opacity: 0; }
+}
+@keyframes gl-scan { to { background-position: 0 100px; } }
+@keyframes gl-faixa { to { transform: translateY(1360px); } }
+.tpl-glitch .conteudo { animation: gl-rgb 2.9s steps(1) infinite; }
+@keyframes gl-rgb {
+  0%, 100% { text-shadow: none; }
+  6%, 41%, 73% { text-shadow: -10px 0 #ff2a6d, 10px 0 #05d9e8; }
+  8%, 43%, 75% { text-shadow: none; }
+}
+.tpl-glitch .titulo { position: relative; color: var(--ct); animation: gl-skew 2.2s steps(1) infinite; }
+@keyframes gl-skew { 0%, 100% { transform: skewX(0); } 20% { transform: skewX(12deg); } 22% { transform: skewX(-8deg) translateX(14px); } 24% { transform: none; } 61% { transform: skewX(-15deg); } 63% { transform: none; } }
+.tpl-glitch .titulo::before, .tpl-glitch .titulo::after { content: attr(data-glitch); position: absolute; left: 0; top: 0; width: 100%; text-shadow: none; }
+.tpl-glitch .titulo::before { color: var(--c1); left: 14px; animation: gl-fatia-1 1.7s steps(1) infinite; }
+.tpl-glitch .titulo::after { color: var(--c2); left: -14px; animation: gl-fatia-2 2.1s steps(1) infinite; }
+@keyframes gl-fatia-1 {
+  0%, 100% { clip-path: inset(0 0 100% 0); }
+  8% { clip-path: inset(12% 0 55% 0); transform: translateX(-30px); } 11% { clip-path: inset(0 0 100% 0); }
+  36% { clip-path: inset(68% 0 4% 0); transform: translateX(40px); } 40% { clip-path: inset(0 0 100% 0); }
+  70% { clip-path: inset(30% 0 45% 0); transform: translateX(-60px) scaleX(1.1); } 74% { clip-path: inset(0 0 100% 0); }
+}
+@keyframes gl-fatia-2 {
+  0%, 100% { clip-path: inset(100% 0 0 0); }
+  18% { clip-path: inset(45% 0 20% 0); transform: translateX(36px); } 21% { clip-path: inset(100% 0 0 0); }
+  52% { clip-path: inset(3% 0 78% 0); transform: translateX(-46px); } 55% { clip-path: inset(100% 0 0 0); }
+  86% { clip-path: inset(58% 0 12% 0); transform: translateX(70px) scaleX(.9); } 89% { clip-path: inset(100% 0 0 0); }
+}
+
+/* ---------- logo: posição livre por porcentagem ---------- */
+.logo {
+  position: absolute;
+  left: calc(var(--logo-x, 50) * 1%);
+  top: calc(var(--logo-y, 88) * 1%);
+  transform: translate(calc(var(--logo-x, 50) * -1%), calc(var(--logo-y, 88) * -1%));
+  width: var(--logo-w, 260px);
+  height: auto;
+  opacity: var(--logo-op, .9);
+  pointer-events: none;
+  z-index: 3;
+}
+.logo-false .logo { display: none; }
+
+/* ---------- Legibilidade: reforço atrás/ao redor do texto ----------
+   Fica no FIM do arquivo de propósito: a escolha do usuário vence o brilho que
+   alguns templates (neon, synthwave) dão ao texto. */
+
+.contraste-sombra-suave .titulo { text-shadow: 0 calc(var(--sombra-d) / 2) calc(var(--sombra-d) * 1.5) var(--sombra-cor), 0 var(--sombra-d) calc(var(--sombra-d) * 5) var(--sombra-cor), 0 0 2px var(--sombra-cor); }
+.contraste-sombra-suave .sub { text-shadow: 0 3px 10px var(--sombra-cor), 0 0 2px var(--sombra-cor); }
+
+.contraste-sombra-dura .titulo { text-shadow: var(--sombra-d) var(--sombra-d) 0 var(--sombra-cor); }
+.contraste-sombra-dura .sub { text-shadow: calc(var(--sombra-d) / 2) calc(var(--sombra-d) / 2) 0 var(--sombra-cor); }
+
+.contraste-sombra-longa .titulo {
+  text-shadow:
+    1px 1px 0 var(--sombra-cor), 2px 2px 0 var(--sombra-cor), 3px 3px 0 var(--sombra-cor), 4px 4px 0 var(--sombra-cor),
+    5px 5px 0 var(--sombra-cor), 6px 6px 0 var(--sombra-cor), 7px 7px 0 var(--sombra-cor), 8px 8px 0 var(--sombra-cor),
+    9px 9px 0 var(--sombra-cor), 10px 10px 0 var(--sombra-cor), 11px 11px 0 var(--sombra-cor), 12px 12px 0 var(--sombra-cor),
+    13px 13px 0 var(--sombra-cor), 14px 14px 0 var(--sombra-cor), 15px 15px 0 var(--sombra-cor), 16px 16px 0 var(--sombra-cor),
+    var(--sombra-d) var(--sombra-d) 0 var(--sombra-cor);
+}
+.contraste-sombra-longa .sub { text-shadow: 1px 1px 0 var(--sombra-cor), 2px 2px 0 var(--sombra-cor), 3px 3px 0 var(--sombra-cor), 4px 4px 0 var(--sombra-cor); }
+
+.contraste-contorno .titulo { -webkit-text-stroke: 4px var(--sombra-cor); paint-order: stroke fill; text-shadow: none; }
+.contraste-contorno .sub { -webkit-text-stroke: 2px var(--sombra-cor); paint-order: stroke fill; text-shadow: none; }
+
+.contraste-placa-escura .conteudo, .contraste-placa-clara .conteudo { isolation: isolate; }
+.contraste-placa-escura .conteudo::after, .contraste-placa-clara .conteudo::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(1500px, 92%);
+  height: min(640px, 80%);
+  border-radius: 32px;
+  z-index: -1;
+}
+.contraste-placa-escura .conteudo::after { background: rgba(0, 0, 0, .62); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.contraste-placa-escura .titulo, .contraste-placa-escura .sub { text-shadow: none; }
+.contraste-placa-clara .conteudo::after { background: rgba(255, 255, 255, .85); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.contraste-placa-clara .titulo, .contraste-placa-clara .sub { color: #111; text-shadow: none; }
+.contraste-placa-clara.anim-brilho .titulo { color: transparent; background-image: linear-gradient(110deg, #111 0 40%, var(--c1) 50%, #111 60% 100%); }
+
+.contraste-nenhum .titulo, .contraste-nenhum .sub { text-shadow: none; }

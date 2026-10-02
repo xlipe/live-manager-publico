@@ -1,0 +1,19 @@
+# configurações e uploads locais
+servidor-local/config/*.json
+!servidor-local/config/server.example.json
+servidor-local/sounds/*
+!servidor-local/sounds/.gitkeep
+servidor-local/runtime/
+
+# ambiente
+.env
+node_modules/
+*.log
+
+# ferramentas locais
+.DS_Store
+Thumbs.db
+
+
+# banco do CRM (dados pessoais; fica no volume da VPS)
+servidor-local/config/crm.db*

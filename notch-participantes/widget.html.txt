@@ -1,0 +1,51 @@
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family={islandFont}:wght@500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+  rel="stylesheet"
+/>
+<!-- fontes dos temas dos balões -->
+<link
+  href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Anton&family=Oswald:wght@500;700&family=Bangers&family=Luckiest+Guy&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700;900&family=Black+Ops+One&family=Press+Start+2P&family=VT323&family=Cinzel:wght@600;700&family=Orbitron:wght@500;700;900&family=Inter:wght@500;600;700&display=swap"
+  rel="stylesheet"
+/>
+
+<div id="stage" class="stage chatmode-{chatMode} palette-{palette}">
+  <div
+    id="wrap"
+    class="wrap pos-{position} shape-{shape} glow-{glow} icons-{showRoleIcons} hide-empty-{hideWhenEmpty} count-{showCount} preview-{previewMode} livedot-{showLiveDot}"
+  >
+    <div class="notch" id="notch" style="zoom: calc({islandScale} / 100); --alert-grow: calc({alertGrow} / 100); --pad-x: {islandPadX}px">
+      <div class="island-bg" aria-hidden="true"></div>
+      <div class="sparkles" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+
+      <div class="compact" id="compact">
+        <span class="live-dot" aria-hidden="true"></span>
+        <div class="avatars" id="avatars"></div>
+        <div class="count" id="count"></div>
+        <div class="announce" id="announce"></div>
+      </div>
+
+      <div class="msg" id="msg">
+        <div class="msg-avatar" id="msgAvatar"></div>
+        <div class="msg-text">
+          <div class="msg-name" id="msgName"></div>
+          <div class="msg-body" id="msgBody"></div>
+        </div>
+      </div>
+
+      <div class="alert" id="alert">
+        <div class="alert-avatar" id="alertAvatar"></div>
+        <div class="alert-text">
+          <div class="alert-title" id="alertTitle"></div>
+          <div class="alert-name" id="alertName"></div>
+          <div class="alert-sub" id="alertSub"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="chatList" class="chat-list corner-{chatCorner} theme-{chatBubbleTheme}" style="--chat-scale: calc({chatScale} / 100)"></div>
+</div>

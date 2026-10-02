@@ -1,0 +1,762 @@
+{
+  "testMessageButton": {
+    "label": "Adicionar participante de teste",
+    "group": "Pré-visualização",
+    "type": "button",
+    "value": "notch_participantes"
+  },
+  "clearButton": {
+    "label": "Limpar participantes",
+    "group": "Pré-visualização",
+    "type": "button",
+    "value": "notch_participantes"
+  },
+  "testSubButton": {
+    "label": "Testar alerta: novo inscrito",
+    "group": "Pré-visualização",
+    "type": "button",
+    "value": "notch_participantes"
+  },
+  "testMemberButton": {
+    "label": "Testar alerta: novo membro",
+    "group": "Pré-visualização",
+    "type": "button",
+    "value": "notch_participantes"
+  },
+  "testSuperchatButton": {
+    "label": "Testar alerta: Super Chat",
+    "group": "Pré-visualização",
+    "type": "button",
+    "value": "notch_participantes"
+  },
+  "testTipButton": {
+    "label": "Testar alerta: doação",
+    "group": "Pré-visualização",
+    "type": "button",
+    "value": "notch_participantes"
+  },
+  "previewMode": {
+    "label": "Modo de pré-visualização (testes ao carregar)",
+    "group": "Pré-visualização",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Ligado",
+      "false": "Desligado"
+    }
+  },
+
+  "position": {
+    "label": "Posição",
+    "group": "Layout",
+    "type": "dropdown",
+    "value": "center",
+    "options": {
+      "center": "Centro (notch)",
+      "left": "Esquerda",
+      "right": "Direita"
+    }
+  },
+  "shape": {
+    "label": "Formato",
+    "group": "Layout",
+    "type": "dropdown",
+    "value": "island",
+    "options": {
+      "island": "Ilha flutuante (todos os cantos redondos)",
+      "notch": "Colado no topo (só cantos de baixo redondos)"
+    }
+  },
+  "offsetTop": {
+    "label": "Distância do topo (px)",
+    "group": "Layout",
+    "type": "number",
+    "value": 16,
+    "min": 0,
+    "step": 1
+  },
+  "offsetSide": {
+    "label": "Distância lateral (px, para Esquerda/Direita)",
+    "group": "Layout",
+    "type": "number",
+    "value": 24,
+    "min": 0,
+    "step": 1
+  },
+  "borderRadius": {
+    "label": "Arredondamento no formato colado ao topo (px). A ilha flutuante é sempre cápsula.",
+    "group": "Layout",
+    "type": "number",
+    "value": 30,
+    "min": 0,
+    "step": 1
+  },
+  "avatarSize": {
+    "label": "Tamanho dos avatares (px)",
+    "group": "Layout",
+    "type": "number",
+    "value": 44,
+    "min": 20,
+    "step": 1
+  },
+  "avatarOverlap": {
+    "label": "Sobreposição entre avatares (px)",
+    "group": "Layout",
+    "type": "number",
+    "value": 10,
+    "min": 0,
+    "step": 1
+  },
+  "maxAvatars": {
+    "label": "Máximo de avatares",
+    "group": "Layout",
+    "type": "number",
+    "value": 12,
+    "min": 1,
+    "step": 1
+  },
+
+  "inactiveMinutes": {
+    "label": "Minutos sem falar até sair (0 = nunca)",
+    "group": "Participantes",
+    "type": "number",
+    "value": 10,
+    "min": 0,
+    "step": 1
+  },
+  "sortRecentFirst": {
+    "label": "Quem falou por último vai para a frente?",
+    "group": "Participantes",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não (ordem de chegada)"
+    }
+  },
+  "showLiveDot": {
+    "label": "Mostrar bolinha pulsante 'ao vivo'?",
+    "group": "Participantes",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "showCount": {
+    "label": "Mostrar contador?",
+    "group": "Participantes",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "countLabel": {
+    "label": "Texto depois do número (ex.: no chat)",
+    "group": "Participantes",
+    "type": "text",
+    "value": "no chat"
+  },
+  "emptyText": {
+    "label": "Texto quando não há ninguém",
+    "group": "Participantes",
+    "type": "text",
+    "value": "chat aberto"
+  },
+  "hideWhenEmpty": {
+    "label": "Esconder a ilha quando não há ninguém?",
+    "group": "Participantes",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "announceNew": {
+    "label": "Avisar quando alguém novo fala?",
+    "group": "Participantes",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "announceText": {
+    "label": "Texto do aviso ({name} = nome)",
+    "group": "Participantes",
+    "type": "text",
+    "value": "{name} chegou"
+  },
+  "announceSeconds": {
+    "label": "Segundos que o aviso fica visível",
+    "group": "Participantes",
+    "type": "number",
+    "value": 3,
+    "min": 1,
+    "step": 1
+  },
+  "ignoreBacklog": {
+    "label": "Ignorar mensagens e eventos antigos ao carregar?",
+    "group": "Participantes",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+
+  "chatMode": {
+    "label": "Onde mostrar as mensagens do chat",
+    "group": "Chat",
+    "type": "dropdown",
+    "value": "island",
+    "options": {
+      "island": "Dentro da Dynamic Island (uma por vez)",
+      "bubbles": "Balões em um canto da tela",
+      "off": "Não mostrar (só participantes e alertas)"
+    }
+  },
+  "chatMessageSeconds": {
+    "label": "Ilha: segundos que cada mensagem fica visível",
+    "group": "Chat",
+    "type": "number",
+    "value": 5,
+    "min": 1,
+    "step": 1
+  },
+  "chatMaxWidth": {
+    "label": "Ilha: largura máxima do texto (px)",
+    "group": "Chat",
+    "type": "number",
+    "value": 560,
+    "min": 200,
+    "step": 10
+  },
+  "chatQueueMax": {
+    "label": "Ilha: máximo de mensagens na fila (as mais antigas são descartadas)",
+    "group": "Chat",
+    "type": "number",
+    "value": 4,
+    "min": 1,
+    "step": 1
+  },
+  "chatCorner": {
+    "label": "Balões: canto da tela",
+    "group": "Chat",
+    "type": "dropdown",
+    "value": "bottom-right",
+    "options": {
+      "bottom-right": "Inferior direito",
+      "bottom-left": "Inferior esquerdo",
+      "top-right": "Superior direito",
+      "top-left": "Superior esquerdo"
+    }
+  },
+  "chatWidth": {
+    "label": "Balões: largura da coluna (px)",
+    "group": "Chat",
+    "type": "number",
+    "value": 440,
+    "min": 240,
+    "step": 10
+  },
+  "chatMaxMessages": {
+    "label": "Balões: máximo na tela",
+    "group": "Chat",
+    "type": "number",
+    "value": 8,
+    "min": 1,
+    "step": 1
+  },
+  "chatLifetime": {
+    "label": "Balões: segundos até sumir (0 = nunca)",
+    "group": "Chat",
+    "type": "number",
+    "value": 20,
+    "min": 0,
+    "step": 1
+  },
+  "chatSoundMode": {
+    "label": "Som a cada mensagem",
+    "group": "Chat",
+    "type": "dropdown",
+    "value": "chime",
+    "options": {
+      "chime": "Toque suave embutido",
+      "file": "Arquivo enviado abaixo",
+      "none": "Sem som"
+    }
+  },
+  "chatSound": {
+    "label": "Arquivos de som do chat (um aleatório toca)",
+    "group": "Chat",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+  "chatVolume": {
+    "label": "Volume do som do chat (%)",
+    "group": "Chat",
+    "type": "slider",
+    "value": 35,
+    "min": 0,
+    "max": 100,
+    "step": 1
+  },
+  "chatSoundCooldown": {
+    "label": "Intervalo mínimo entre sons do chat (segundos)",
+    "group": "Chat",
+    "type": "number",
+    "value": 2,
+    "min": 0,
+    "step": 1
+  },
+
+  "alertInfo": {
+    "label": "A ilha expande, mostra a pessoa e toca um som.",
+    "group": "Alertas",
+    "type": "hidden"
+  },
+  "alertInfo2": {
+    "label": "Textos aceitam {name} {amount} {months} {sender}",
+    "group": "Alertas",
+    "type": "hidden"
+  },
+  "alertDuration": {
+    "label": "Segundos que o alerta fica aberto",
+    "group": "Alertas",
+    "type": "number",
+    "value": 7,
+    "min": 2,
+    "step": 1
+  },
+  "alertVolume": {
+    "label": "Volume dos sons (%)",
+    "group": "Alertas",
+    "type": "slider",
+    "value": 60,
+    "min": 0,
+    "max": 100,
+    "step": 1
+  },
+  "alertShowMessage": {
+    "label": "Mostrar a mensagem que a pessoa escreveu?",
+    "group": "Alertas",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "defaultSound": {
+    "label": "Som embutido quando o alerta não tem arquivo",
+    "group": "Alertas",
+    "type": "dropdown",
+    "value": "chime",
+    "options": {
+      "chime": "Chime sintetizado (um por tipo de alerta)",
+      "none": "Nenhum (só toca se houver arquivo)"
+    }
+  },
+  "keepAudioWarm": {
+    "label": "Manter áudio ativo (evita cortar o início do som)?",
+    "group": "Alertas",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "currencySymbol": {
+    "label": "Símbolo da moeda (quando o evento não informa)",
+    "group": "Alertas",
+    "type": "text",
+    "value": "R$"
+  },
+
+  "subEnabled": {
+    "label": "Ativar?",
+    "group": "Alerta: Novo inscrito (YouTube) / Sub (Twitch)",
+    "type": "dropdown",
+    "value": "true",
+    "options": { "true": "Sim", "false": "Não" }
+  },
+  "subTitle": {
+    "label": "Título",
+    "group": "Alerta: Novo inscrito (YouTube) / Sub (Twitch)",
+    "type": "text",
+    "value": "Novo inscrito"
+  },
+  "subGiftTitle": {
+    "label": "Título quando for presente (Twitch)",
+    "group": "Alerta: Novo inscrito (YouTube) / Sub (Twitch)",
+    "type": "text",
+    "value": "Sub de presente de {sender}"
+  },
+  "subSubtitle": {
+    "label": "Linha de baixo",
+    "group": "Alerta: Novo inscrito (YouTube) / Sub (Twitch)",
+    "type": "text",
+    "value": "Bem-vindo ao canal!"
+  },
+  "subColor": {
+    "label": "Cor",
+    "group": "Alerta: Novo inscrito (YouTube) / Sub (Twitch)",
+    "type": "colorpicker",
+    "value": "#FF4D6D"
+  },
+  "subSound": {
+    "label": "Sons (um aleatório toca)",
+    "group": "Alerta: Novo inscrito (YouTube) / Sub (Twitch)",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+
+  "memberEnabled": {
+    "label": "Ativar?",
+    "group": "Alerta: Novo membro do canal",
+    "type": "dropdown",
+    "value": "true",
+    "options": { "true": "Sim", "false": "Não" }
+  },
+  "memberTitle": {
+    "label": "Título",
+    "group": "Alerta: Novo membro do canal",
+    "type": "text",
+    "value": "Novo membro"
+  },
+  "memberSubtitle": {
+    "label": "Linha de baixo ({months} = meses)",
+    "group": "Alerta: Novo membro do canal",
+    "type": "text",
+    "value": "Obrigado pelo apoio!"
+  },
+  "memberColor": {
+    "label": "Cor",
+    "group": "Alerta: Novo membro do canal",
+    "type": "colorpicker",
+    "value": "#34D399"
+  },
+  "memberSound": {
+    "label": "Sons (um aleatório toca)",
+    "group": "Alerta: Novo membro do canal",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+
+  "superchatEnabled": {
+    "label": "Ativar?",
+    "group": "Alerta: Super Chat",
+    "type": "dropdown",
+    "value": "true",
+    "options": { "true": "Sim", "false": "Não" }
+  },
+  "superchatTitle": {
+    "label": "Título",
+    "group": "Alerta: Super Chat",
+    "type": "text",
+    "value": "Super Chat de {amount}"
+  },
+  "superchatSubtitle": {
+    "label": "Linha de baixo",
+    "group": "Alerta: Super Chat",
+    "type": "text",
+    "value": ""
+  },
+  "superchatColor": {
+    "label": "Cor",
+    "group": "Alerta: Super Chat",
+    "type": "colorpicker",
+    "value": "#F5B301"
+  },
+  "superchatSound": {
+    "label": "Sons (um aleatório toca)",
+    "group": "Alerta: Super Chat",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+
+  "tipEnabled": {
+    "label": "Ativar?",
+    "group": "Alerta: Doação (StreamElements)",
+    "type": "dropdown",
+    "value": "true",
+    "options": { "true": "Sim", "false": "Não" }
+  },
+  "tipTitle": {
+    "label": "Título",
+    "group": "Alerta: Doação (StreamElements)",
+    "type": "text",
+    "value": "Doação de {amount}"
+  },
+  "tipSubtitle": {
+    "label": "Linha de baixo",
+    "group": "Alerta: Doação (StreamElements)",
+    "type": "text",
+    "value": "Muito obrigado!"
+  },
+  "tipColor": {
+    "label": "Cor",
+    "group": "Alerta: Doação (StreamElements)",
+    "type": "colorpicker",
+    "value": "#22D3EE"
+  },
+  "tipSound": {
+    "label": "Sons (um aleatório toca)",
+    "group": "Alerta: Doação (StreamElements)",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+
+  "followEnabled": {
+    "label": "Ativar?",
+    "group": "Alerta: Seguidor (Twitch)",
+    "type": "dropdown",
+    "value": "true",
+    "options": { "true": "Sim", "false": "Não" }
+  },
+  "followTitle": {
+    "label": "Título",
+    "group": "Alerta: Seguidor (Twitch)",
+    "type": "text",
+    "value": "Novo seguidor"
+  },
+  "followSubtitle": {
+    "label": "Linha de baixo",
+    "group": "Alerta: Seguidor (Twitch)",
+    "type": "text",
+    "value": ""
+  },
+  "followColor": {
+    "label": "Cor",
+    "group": "Alerta: Seguidor (Twitch)",
+    "type": "colorpicker",
+    "value": "#9146FF"
+  },
+  "followSound": {
+    "label": "Sons (um aleatório toca)",
+    "group": "Alerta: Seguidor (Twitch)",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+
+  "cheerEnabled": {
+    "label": "Ativar?",
+    "group": "Alerta: Bits (Twitch)",
+    "type": "dropdown",
+    "value": "true",
+    "options": { "true": "Sim", "false": "Não" }
+  },
+  "cheerTitle": {
+    "label": "Título",
+    "group": "Alerta: Bits (Twitch)",
+    "type": "text",
+    "value": "{amount} bits"
+  },
+  "cheerSubtitle": {
+    "label": "Linha de baixo",
+    "group": "Alerta: Bits (Twitch)",
+    "type": "text",
+    "value": ""
+  },
+  "cheerColor": {
+    "label": "Cor",
+    "group": "Alerta: Bits (Twitch)",
+    "type": "colorpicker",
+    "value": "#A970FF"
+  },
+  "cheerSound": {
+    "label": "Sons (um aleatório toca)",
+    "group": "Alerta: Bits (Twitch)",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+
+  "raidEnabled": {
+    "label": "Ativar?",
+    "group": "Alerta: Raid (Twitch)",
+    "type": "dropdown",
+    "value": "true",
+    "options": { "true": "Sim", "false": "Não" }
+  },
+  "raidTitle": {
+    "label": "Título",
+    "group": "Alerta: Raid (Twitch)",
+    "type": "text",
+    "value": "Raid com {amount} pessoas"
+  },
+  "raidSubtitle": {
+    "label": "Linha de baixo",
+    "group": "Alerta: Raid (Twitch)",
+    "type": "text",
+    "value": "Sejam bem-vindos!"
+  },
+  "raidColor": {
+    "label": "Cor",
+    "group": "Alerta: Raid (Twitch)",
+    "type": "colorpicker",
+    "value": "#FF8A3D"
+  },
+  "raidSound": {
+    "label": "Sons (um aleatório toca)",
+    "group": "Alerta: Raid (Twitch)",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+
+  "palette": {
+    "label": "Paleta de cores",
+    "group": "Cores",
+    "type": "dropdown",
+    "value": "aurora",
+    "options": {
+      "aurora": "Aurora (roxo e ciano)",
+      "sunset": "Sunset (coral e laranja)",
+      "ocean": "Ocean (azul e ciano)",
+      "mint": "Mint (verde e menta)",
+      "candy": "Candy (rosa e lilás)",
+      "gold": "Gold (dourado e âmbar)",
+      "mono": "Mono (branco e cinza)",
+      "glass": "Glass (claro, para cenas escuras)",
+      "youtube": "YouTube (vermelho)",
+      "custom": "Personalizada (usa as cores abaixo)"
+    }
+  },
+  "paletteInfo": {
+    "label": "As cores abaixo só valem na paleta Personalizada.",
+    "group": "Cores",
+    "type": "hidden"
+  },
+  "bgColor": {
+    "label": "Fundo da ilha",
+    "group": "Cores",
+    "type": "colorpicker",
+    "value": "rgba(12, 12, 16, 0.92)"
+  },
+  "textColor": {
+    "label": "Cor do texto",
+    "group": "Cores",
+    "type": "colorpicker",
+    "value": "#FFFFFF"
+  },
+  "accentColor": {
+    "label": "Cor de destaque (ponto ao vivo, número, nome)",
+    "group": "Cores",
+    "type": "colorpicker",
+    "value": "#FF4D6D"
+  },
+  "glow": {
+    "label": "Brilho animado na borda?",
+    "group": "Cores",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "glowColor": {
+    "label": "Cor do brilho",
+    "group": "Cores",
+    "type": "colorpicker",
+    "value": "#FF3B5C"
+  },
+  "ringViewer": {
+    "label": "Anel do avatar — espectador",
+    "group": "Cores",
+    "type": "colorpicker",
+    "value": "rgba(255, 255, 255, 0.45)"
+  },
+  "ringOwner": {
+    "label": "Anel do avatar — dono do canal",
+    "group": "Cores",
+    "type": "colorpicker",
+    "value": "#FFD166"
+  },
+  "ringMod": {
+    "label": "Anel do avatar — moderador",
+    "group": "Cores",
+    "type": "colorpicker",
+    "value": "#4DA3FF"
+  },
+  "ringMember": {
+    "label": "Anel do avatar — membro",
+    "group": "Cores",
+    "type": "colorpicker",
+    "value": "#2ECC71"
+  },
+  "showRoleIcons": {
+    "label": "Mostrar ícone de cargo no avatar?",
+    "group": "Cores",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+
+  "islandFont": {
+    "label": "Fonte",
+    "group": "Texto",
+    "type": "googleFont",
+    "value": "Outfit"
+  },
+  "fontSize": {
+    "label": "Tamanho da fonte (px)",
+    "group": "Texto",
+    "type": "number",
+    "value": 17,
+    "min": 10,
+    "step": 1
+  },
+
+  "includeOwner": {
+    "label": "Mostrar o dono do canal entre os participantes?",
+    "group": "Filtros",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "ignoreUserList": {
+    "label": "Ignorar estes usuários (separados por vírgula)",
+    "group": "Filtros",
+    "type": "text",
+    "value": "StreamElements, Streamlabs, Nightbot, Sery_Bot"
+  },
+  "ignorePrefixList": {
+    "label": "Ignorar mensagens que começam com",
+    "group": "Filtros",
+    "type": "text",
+    "value": "!"
+  },
+
+  "about1": {
+    "label": "Dynamic Island v3.0 (palco 1920x1080 com chat)",
+    "group": "Sobre",
+    "type": "hidden"
+  },
+  "about2": {
+    "label": "Participantes do chat + alertas do canal",
+    "group": "Sobre",
+    "type": "hidden"
+  }
+}

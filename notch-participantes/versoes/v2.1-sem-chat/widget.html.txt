@@ -1,0 +1,34 @@
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family={islandFont}:wght@500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+  rel="stylesheet"
+/>
+
+<div
+  id="wrap"
+  class="wrap pos-{position} shape-{shape} glow-{glow} icons-{showRoleIcons} hide-empty-{hideWhenEmpty} count-{showCount} preview-{previewMode} palette-{palette}"
+>
+  <div class="notch" id="notch">
+    <div class="island-bg" aria-hidden="true"></div>
+    <div class="sparkles" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+
+    <div class="compact" id="compact">
+      <span class="live-dot" aria-hidden="true"></span>
+      <div class="avatars" id="avatars"></div>
+      <div class="count" id="count"></div>
+      <div class="announce" id="announce"></div>
+    </div>
+
+    <div class="alert" id="alert">
+      <div class="alert-avatar" id="alertAvatar"></div>
+      <div class="alert-text">
+        <div class="alert-title" id="alertTitle"></div>
+        <div class="alert-name" id="alertName"></div>
+        <div class="alert-sub" id="alertSub"></div>
+      </div>
+    </div>
+  </div>
+</div>

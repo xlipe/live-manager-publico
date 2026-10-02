@@ -1,0 +1,17 @@
+{
+  "volumeGeral": {
+    "label": "Volume geral dos botões de som (%)",
+    "group": "Sons",
+    "type": "slider",
+    "value": 80,
+    "min": 0,
+    "max": 100,
+    "step": 5
+  },
+  "testButton": {
+    "label": "Tocar um bipe de teste",
+    "group": "Sons",
+    "type": "button",
+    "value": "sons"
+  }
+}

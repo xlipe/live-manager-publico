@@ -1,0 +1,1229 @@
+{
+  "testMessageButton": {
+    "label": "Enviar mensagem de teste",
+    "group": "Pré-visualização",
+    "type": "button",
+    "value": "zaytri_dynamicchatbubbles"
+  },
+  "previewModeLabel": {
+    "label": "Modo de pré-visualização",
+    "group": "Pré-visualização",
+    "type": "hidden"
+  },
+  "previewMode": {
+    "label": "(Mostra bolhas quando as configurações mudam)",
+    "group": "Pré-visualização",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Ligado",
+      "false": "Desligado"
+    }
+  },
+  "previewType": {
+    "label": "Tipo de mensagem de teste",
+    "group": "Pré-visualização",
+    "type": "dropdown",
+    "value": "random",
+    "options": {
+      "random": "Qualquer",
+      "default": "Normal",
+      "highlight": "Destacada",
+      "action": "Ação (/me)"
+    }
+  },
+  "previewMessage": {
+    "label": "Mensagem de teste personalizada (sem emotes)",
+    "group": "Pré-visualização",
+    "type": "text",
+    "value": ""
+  },
+  "themeLabel": {
+    "label": "Temas prontos",
+    "group": "Estilo das bolhas",
+    "type": "hidden"
+  },
+  "theme": {
+    "label": "(Nem tudo funciona nos outros temas)",
+    "group": "Estilo das bolhas",
+    "type": "dropdown",
+    "value": "bubble",
+    "options": {
+      "bubble": "Balão de chat (arredondado)",
+      "default": "Original",
+      "animal-crossing": "Animal Crossing",
+      "98.css": "Windows 98",
+      "xp.css": "Windows XP"
+    }
+  },
+  "bubbleRadius": {
+    "label": "Balão: arredondamento (px)",
+    "group": "Estilo das bolhas",
+    "type": "number",
+    "value": 24,
+    "step": 1,
+    "min": 0
+  },
+  "bubbleNickStyle": {
+    "label": "Balão: posição do nick",
+    "group": "Estilo das bolhas",
+    "type": "dropdown",
+    "value": "pill",
+    "options": {
+      "pill": "Pílula acima do balão",
+      "inside": "Dentro do balão"
+    }
+  },
+  "bubblePillColorMode": {
+    "label": "Balão: cor da pílula do nick",
+    "group": "Estilo das bolhas",
+    "type": "dropdown",
+    "value": "fixed",
+    "options": {
+      "fixed": "Cor fixa (abaixo)",
+      "user": "Cor de cada usuário"
+    }
+  },
+  "bubblePillColor": {
+    "label": "Balão: cor fixa da pílula",
+    "group": "Estilo das bolhas",
+    "type": "colorpicker",
+    "value": "#FF0000"
+  },
+  "bubblePillTextColor": {
+    "label": "Balão: cor do nick na pílula",
+    "group": "Estilo das bolhas",
+    "type": "colorpicker",
+    "value": "#FFFFFF"
+  },
+  "bubbleBadgeStyle": {
+    "label": "Balão: insígnias de cargo",
+    "group": "Estilo das bolhas",
+    "type": "dropdown",
+    "value": "icons",
+    "options": {
+      "icons": "Ícones próprios brancos (coroa, chave, estrela)",
+      "white": "Insígnias do YouTube em silhueta branca",
+      "original": "Insígnias do YouTube originais (coloridas)"
+    }
+  },
+  "roleHighlight": {
+    "label": "Balão cintilante (rosa/azul/verde) para",
+    "group": "Estilo das bolhas",
+    "type": "dropdown",
+    "value": "mods-members",
+    "options": {
+      "mods-members": "Moderadores e membros",
+      "mods": "Só moderadores",
+      "members": "Só membros",
+      "none": "Ninguém"
+    }
+  },
+  "bubbleTail": {
+    "label": "Balão: rabinho",
+    "group": "Estilo das bolhas",
+    "type": "dropdown",
+    "value": "none",
+    "options": {
+      "left": "Esquerda",
+      "right": "Direita",
+      "none": "Sem rabinho"
+    }
+  },
+  "bubbleBorderSize": {
+    "label": "Balão: espessura da borda (px, 0 = sem borda)",
+    "group": "Estilo das bolhas",
+    "type": "number",
+    "value": 0,
+    "step": 1,
+    "min": 0
+  },
+  "corner": {
+    "label": "Tipo de canto (outros temas)",
+    "group": "Estilo das bolhas",
+    "type": "dropdown",
+    "value": "round",
+    "options": {
+      "round": "Arredondado",
+      "square": "Quadrado",
+      "diagonal": "Diagonal"
+    }
+  },
+  "darkMode": {
+    "label": "Ativar modo escuro?",
+    "group": "Estilo das bolhas",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "animation": {
+    "label": "Tipo de animação",
+    "group": "Estilo das bolhas",
+    "type": "dropdown",
+    "value": "fade-up",
+    "options": {
+      "dynamic": "Dinâmica",
+      "zoom": "Zoom com quique",
+      "fade": "Fade",
+      "fade-up": "Fade para cima",
+      "fade-down": "Fade para baixo",
+      "fade-left": "Fade para a esquerda",
+      "fade-right": "Fade para a direita",
+      "none": "Nenhuma"
+    }
+  },
+  "dynamicModifier": {
+    "label": "Multiplicador de largura da animação dinâmica",
+    "group": "Estilo das bolhas",
+    "type": "number",
+    "value": 1.75,
+    "min": 0
+  },
+  "highlightStyle": {
+    "label": "Estilo da mensagem destacada",
+    "group": "Estilo das bolhas",
+    "type": "dropdown",
+    "value": "rainbow",
+    "options": {
+      "rainbow": "Arco-íris",
+      "normal": "Normal"
+    }
+  },
+  "highlightKeywordsLabel": {
+    "label": "Palavras que destacam a mensagem",
+    "group": "Estilo das bolhas",
+    "type": "hidden"
+  },
+  "highlightKeywords": {
+    "label": "(Separadas por vírgula. Ex.: o nome do seu canal)",
+    "group": "Estilo das bolhas",
+    "type": "text",
+    "value": ""
+  },
+  "actionStyle": {
+    "label": "Estilo de /me",
+    "group": "Estilo das bolhas",
+    "type": "dropdown",
+    "value": "italics",
+    "options": {
+      "italics": "Itálico",
+      "normal": "Normal"
+    }
+  },
+  "maxWidth": {
+    "label": "Largura máxima da mensagem (px)",
+    "group": "Tamanho das bolhas",
+    "type": "number",
+    "value": 400,
+    "step": 1,
+    "min": 0
+  },
+  "maxHeight": {
+    "label": "Altura máxima da mensagem (px)",
+    "group": "Tamanho das bolhas",
+    "type": "number",
+    "value": 300,
+    "step": 1,
+    "min": 0
+  },
+  "fixedWidth": {
+    "label": "Largura sempre igual à máxima?",
+    "group": "Tamanho das bolhas",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "positionMode": {
+    "label": "Modo de posição",
+    "group": "Posição das bolhas",
+    "type": "dropdown",
+    "value": "list",
+    "options": {
+      "random": "Aleatório",
+      "random-edge": "Borda aleatória",
+      "list": "Lista"
+    }
+  },
+  "listDirection": {
+    "label": "Direção (modo Lista)",
+    "group": "Posição das bolhas",
+    "type": "dropdown",
+    "value": "bottom",
+    "options": {
+      "bottom": "Vertical (de baixo)",
+      "top": "Vertical (de cima)",
+      "left": "Horizontal (da esquerda)",
+      "right": "Horizontal (da direita)"
+    }
+  },
+  "listAlignment": {
+    "label": "Alinhamento do widget (balões, pílula e texto)",
+    "group": "Posição das bolhas",
+    "type": "dropdown",
+    "value": "flex-end",
+    "options": {
+      "flex-start": "Esquerda (vertical) / Topo (horizontal)",
+      "center": "Centro",
+      "flex-end": "Direita (vertical) / Base (horizontal)"
+    }
+  },
+  "topEdge": {
+    "label": "Usar borda superior? (Borda aleatória)",
+    "group": "Posição das bolhas",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "bottomEdge": {
+    "label": "Usar borda inferior? (Borda aleatória)",
+    "group": "Posição das bolhas",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "leftEdge": {
+    "label": "Usar borda esquerda? (Borda aleatória)",
+    "group": "Posição das bolhas",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "rightEdge": {
+    "label": "Usar borda direita? (Borda aleatória)",
+    "group": "Posição das bolhas",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "edgeDeviation": {
+    "label": "Variação da borda (px) (Borda aleatória)",
+    "group": "Posição das bolhas",
+    "type": "number",
+    "value": 0,
+    "min": 0,
+    "step": 1
+  },
+  "padding": {
+    "label": "Distância das bordas do widget (px)",
+    "group": "Posição das bolhas",
+    "type": "number",
+    "value": 30,
+    "min": 0,
+    "step": 1
+  },
+  "googleFont": {
+    "label": "Fonte do Google",
+    "group": "Estilo do texto",
+    "type": "googleFont",
+    "value": "Nunito"
+  },
+  "customFont": {
+    "label": "Nome de fonte personalizada",
+    "group": "Estilo do texto",
+    "type": "text",
+    "value": ""
+  },
+  "fontSize": {
+    "label": "Tamanho da fonte (px)",
+    "group": "Estilo do texto",
+    "type": "number",
+    "value": 18,
+    "step": 1,
+    "min": 0
+  },
+  "fontWeight": {
+    "label": "Peso da fonte",
+    "group": "Estilo do texto",
+    "type": "dropdown",
+    "value": "bold",
+    "options": {
+      "normal": "Normal",
+      "bold": "Negrito",
+      "100": "100",
+      "200": "200",
+      "300": "300",
+      "400": "400",
+      "500": "500",
+      "600": "600",
+      "700": "700",
+      "800": "800",
+      "900": "900"
+    }
+  },
+  "useCustomBorderColorsLabel": {
+    "label": "Usar cores personalizadas de borda/nick?",
+    "group": "Cores personalizadas",
+    "type": "hidden"
+  },
+  "useCustomBorderColors": {
+    "label": "(Ignora a cor de cada usuário)",
+    "group": "Cores personalizadas",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "borderColor": {
+    "label": "Cor da borda / caixa do nick",
+    "group": "Cores personalizadas",
+    "type": "colorpicker",
+    "value": "#000000"
+  },
+  "nameColor": {
+    "label": "Cor do nick",
+    "group": "Cores personalizadas",
+    "type": "colorpicker",
+    "value": "#ffffff"
+  },
+  "useCustomMessageColorsLabel": {
+    "label": "Usar cores personalizadas de fundo/texto?",
+    "group": "Cores personalizadas",
+    "type": "hidden"
+  },
+  "useCustomMessageColors": {
+    "label": "(Ignora o modo claro/escuro)",
+    "group": "Cores personalizadas",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "backgroundColor": {
+    "label": "Cor de fundo da bolha",
+    "group": "Cores personalizadas",
+    "type": "colorpicker",
+    "value": "#ffffff"
+  },
+  "textColor": {
+    "label": "Cor do texto",
+    "group": "Cores personalizadas",
+    "type": "colorpicker",
+    "value": "#000000"
+  },
+  "pronounsInfo": {
+    "label": "Integração com pronouns.alejo.io (só Twitch)",
+    "group": "Pronomes (só Twitch)",
+    "type": "hidden"
+  },
+  "pronounsMode": {
+    "label": "Exibição de pronomes",
+    "group": "Pronomes (só Twitch)",
+    "type": "dropdown",
+    "value": "off",
+    "options": {
+      "off": "Desligado",
+      "badge": "Badge",
+      "suffix": "Sufixo"
+    }
+  },
+  "pronounsLowercase": {
+    "label": "Pronomes em minúsculas?",
+    "group": "Pronomes (só Twitch)",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "pronounsBadgeCustomColors": {
+    "label": "Usar cores personalizadas na badge de pronomes?",
+    "group": "Pronomes (só Twitch)",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "pronounsBadgeBackgroundColor": {
+    "label": "Fundo da badge de pronomes",
+    "group": "Pronomes (só Twitch)",
+    "type": "colorpicker",
+    "value": "#000000"
+  },
+  "pronounsBadgeBorderColor": {
+    "label": "Borda da badge de pronomes",
+    "group": "Pronomes (só Twitch)",
+    "type": "colorpicker",
+    "value": "#FFFFFF"
+  },
+  "pronounsBadgeTextColor": {
+    "label": "Texto da badge de pronomes",
+    "group": "Pronomes (só Twitch)",
+    "type": "colorpicker",
+    "value": "#FFFFFF"
+  },
+  "showBadges": {
+    "label": "Mostrar badges (moderador, membro, etc.)?",
+    "group": "Badges",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "largeEmotes": {
+    "label": "Emotes maiores em mensagens só de emotes?",
+    "group": "Emotes",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "ffzGlobal": {
+    "label": "Mostrar emotes globais do FrankerFaceZ? (Twitch)",
+    "group": "Emotes",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "bttvGlobal": {
+    "label": "Mostrar emotes globais do BetterTTV? (Twitch)",
+    "group": "Emotes",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "maxMessagesLabel": {
+    "label": "Máximo de mensagens na tela",
+    "group": "Filtros de mensagem",
+    "type": "hidden"
+  },
+  "maxMessages": {
+    "label": "(0 = sem limite)",
+    "group": "Filtros de mensagem",
+    "type": "number",
+    "value": 25,
+    "step": 1,
+    "min": 0
+  },
+  "emoteOnly": {
+    "label": "Mostrar só mensagens feitas apenas de emotes?",
+    "group": "Filtros de mensagem",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "highlightOnly": {
+    "label": "Mostrar só mensagens destacadas?",
+    "group": "Filtros de mensagem",
+    "type": "dropdown",
+    "value": "false",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "allowedStringsLabel": {
+    "label": "Permitir apenas estas frases exatas:",
+    "group": "Filtros de mensagem",
+    "type": "hidden"
+  },
+  "allowedStrings": {
+    "label": "(Separadas por vírgula)",
+    "group": "Filtros de mensagem",
+    "type": "text",
+    "value": ""
+  },
+  "minMessagesLabel": {
+    "label": "Mínimo de mensagens que um usuário precisa enviar",
+    "group": "Filtros de mensagem",
+    "type": "hidden"
+  },
+  "minMessages": {
+    "label": "antes de as mensagens dele virarem bolhas",
+    "group": "Filtros de mensagem",
+    "type": "number",
+    "value": 0,
+    "step": 1,
+    "min": 0
+  },
+  "messageCooldownLabel": {
+    "label": "Limitar a uma bolha a cada",
+    "group": "Filtros de mensagem",
+    "type": "hidden"
+  },
+  "messageCooldown": {
+    "label": "este número de segundos (0 = sem limite)",
+    "group": "Filtros de mensagem",
+    "type": "number",
+    "value": 0,
+    "step": 1,
+    "min": 0
+  },
+  "raidCooldownLabel": {
+    "label": "Mostrar bolhas só depois de uma raid (só Twitch)",
+    "group": "Filtros de mensagem",
+    "type": "hidden"
+  },
+  "raidCooldownLabel2": {
+    "label": "por este número de segundos (0 = desligado)",
+    "group": "Filtros de mensagem",
+    "type": "hidden"
+  },
+  "raidCooldown": {
+    "label": "(negativo esconde as bolhas em vez de mostrar)",
+    "group": "Filtros de mensagem",
+    "type": "number",
+    "value": 0,
+    "step": 1
+  },
+  "raidMin": {
+    "label": "Mínimo de viewers da raid para o item acima",
+    "group": "Filtros de mensagem",
+    "type": "number",
+    "value": 0,
+    "step": 1,
+    "min": 0
+  },
+  "includeEveryone": {
+    "label": "Mostrar mensagens de todo mundo?",
+    "group": "Filtros de usuário",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "includeFollowers": {
+    "label": "Mostrar mensagens de seguidores? (só Twitch)",
+    "group": "Filtros de usuário",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "minFollowTime": {
+    "label": "Mínimo de dias seguindo (só Twitch)",
+    "group": "Filtros de usuário",
+    "type": "number",
+    "value": 1,
+    "step": 1,
+    "min": 0
+  },
+  "includeSubs": {
+    "label": "Mostrar mensagens de membros?",
+    "group": "Filtros de usuário",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "includeVIPs": {
+    "label": "Mostrar mensagens de VIPs? (só Twitch)",
+    "group": "Filtros de usuário",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "includeMods": {
+    "label": "Mostrar mensagens de moderadores?",
+    "group": "Filtros de usuário",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "allowUserListLabel": {
+    "label": "Mostrar mensagens apenas destes usuários:",
+    "group": "Filtros de usuário",
+    "type": "hidden"
+  },
+  "allowUserList": {
+    "label": "(Separados por vírgula)",
+    "group": "Filtros de usuário",
+    "type": "text",
+    "value": ""
+  },
+  "ignoreUserListLabel": {
+    "label": "Ignorar estes usuários:",
+    "group": "Filtros de bots",
+    "type": "hidden"
+  },
+  "ignoreUserList": {
+    "label": "(Separados por vírgula)",
+    "group": "Filtros de bots",
+    "type": "text",
+    "value": "StreamElements, Streamlabs, Nightbot, Sery_Bot"
+  },
+  "ignorePrefixListLabel": {
+    "label": "Ignorar mensagens que começam com:",
+    "group": "Filtros de bots",
+    "type": "hidden"
+  },
+  "ignorePrefixList": {
+    "label": "(Separados por vírgula)",
+    "group": "Filtros de bots",
+    "type": "text",
+    "value": "!"
+  },
+  "ignoreBacklog": {
+    "label": "Ignorar mensagens antigas ao carregar o widget?",
+    "group": "Tempo",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim (evita a rajada ao dar F5)",
+      "false": "Não"
+    }
+  },
+  "lifetimeLabel": {
+    "label": "Esconder bolhas depois de X segundos",
+    "group": "Tempo",
+    "type": "hidden"
+  },
+  "lifetime": {
+    "label": "(0 = nunca esconder)",
+    "group": "Tempo",
+    "type": "number",
+    "value": 10,
+    "step": 1,
+    "min": 0
+  },
+  "delay": {
+    "label": "Atraso até aparecer (segundos; 0 = imediato)",
+    "group": "Tempo",
+    "type": "number",
+    "value": 0,
+    "step": 1,
+    "min": 0
+  },
+  "volume": {
+    "label": "Volume dos sons (%)",
+    "group": "Sons",
+    "type": "slider",
+    "value": 50,
+    "step": 1,
+    "min": 0,
+    "max": 100
+  },
+  "keepAudioWarm": {
+    "label": "Manter áudio ativo (evita cortar o início do som)?",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "soundGroupLabel": {
+    "label": "Toca um som a cada mensagem do chat",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "soundGroupLabel2": {
+    "label": "...dependendo do grupo em que ela se encaixa.",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "soundGroupLabel3": {
+    "label": "Cada grupo pode ter vários sons,",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "soundGroupLabel4": {
+    "label": "...e um deles é tocado aleatoriamente.",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "soundGroup1": {
+    "label": "Grupo 1 — Sons",
+    "group": "Sons",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+  "userLevelSoundGroup1": {
+    "label": "Grupo 1 — Nível de usuário",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "everyone",
+    "options": {
+      "everyone": "Todos",
+      "subs": "Membros",
+      "vips": "VIPs (só Twitch)",
+      "mods": "Moderadores"
+    }
+  },
+  "specificUsersSoundGroup1Label": {
+    "label": "Grupo 1 — Usuários específicos",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "specificUsersSoundGroup1": {
+    "label": "(Separados por vírgula)",
+    "group": "Sons",
+    "type": "text",
+    "value": ""
+  },
+  "messageTypeSoundGroup1": {
+    "label": "Grupo 1 — Tipo de mensagem",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "all",
+    "options": {
+      "all": "Todas",
+      "default": "Normal",
+      "highlight": "Destacada",
+      "action": "Ação (/me)"
+    }
+  },
+  "soundGroup2": {
+    "label": "Grupo 2 — Sons",
+    "group": "Sons",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+  "userLevelSoundGroup2": {
+    "label": "Grupo 2 — Nível de usuário",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "everyone",
+    "options": {
+      "everyone": "Todos",
+      "subs": "Membros",
+      "vips": "VIPs (só Twitch)",
+      "mods": "Moderadores"
+    }
+  },
+  "specificUsersSoundGroup2Label": {
+    "label": "Grupo 2 — Usuários específicos",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "specificUsersSoundGroup2": {
+    "label": "(Separados por vírgula)",
+    "group": "Sons",
+    "type": "text",
+    "value": ""
+  },
+  "messageTypeSoundGroup2": {
+    "label": "Grupo 2 — Tipo de mensagem",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "all",
+    "options": {
+      "all": "Todas",
+      "default": "Normal",
+      "highlight": "Destacada",
+      "action": "Ação (/me)"
+    }
+  },
+  "soundGroup3": {
+    "label": "Grupo 3 — Sons",
+    "group": "Sons",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+  "userLevelSoundGroup3": {
+    "label": "Grupo 3 — Nível de usuário",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "everyone",
+    "options": {
+      "everyone": "Todos",
+      "subs": "Membros",
+      "vips": "VIPs (só Twitch)",
+      "mods": "Moderadores"
+    }
+  },
+  "specificUsersSoundGroup3Label": {
+    "label": "Grupo 3 — Usuários específicos",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "specificUsersSoundGroup3": {
+    "label": "(Separados por vírgula)",
+    "group": "Sons",
+    "type": "text",
+    "value": ""
+  },
+  "messageTypeSoundGroup3": {
+    "label": "Grupo 3 — Tipo de mensagem",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "all",
+    "options": {
+      "all": "Todas",
+      "default": "Normal",
+      "highlight": "Destacada",
+      "action": "Ação (/me)"
+    }
+  },
+  "soundGroup4": {
+    "label": "Grupo 4 — Sons",
+    "group": "Sons",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+  "userLevelSoundGroup4": {
+    "label": "Grupo 4 — Nível de usuário",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "everyone",
+    "options": {
+      "everyone": "Todos",
+      "subs": "Membros",
+      "vips": "VIPs (só Twitch)",
+      "mods": "Moderadores"
+    }
+  },
+  "specificUsersSoundGroup4Label": {
+    "label": "Grupo 4 — Usuários específicos",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "specificUsersSoundGroup4": {
+    "label": "(Separados por vírgula)",
+    "group": "Sons",
+    "type": "text",
+    "value": ""
+  },
+  "messageTypeSoundGroup4": {
+    "label": "Grupo 4 — Tipo de mensagem",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "all",
+    "options": {
+      "all": "Todas",
+      "default": "Normal",
+      "highlight": "Destacada",
+      "action": "Ação (/me)"
+    }
+  },
+  "soundGroup5": {
+    "label": "Grupo 5 — Sons",
+    "group": "Sons",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+  "userLevelSoundGroup5": {
+    "label": "Grupo 5 — Nível de usuário",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "everyone",
+    "options": {
+      "everyone": "Todos",
+      "subs": "Membros",
+      "vips": "VIPs (só Twitch)",
+      "mods": "Moderadores"
+    }
+  },
+  "specificUsersSoundGroup5Label": {
+    "label": "Grupo 5 — Usuários específicos",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "specificUsersSoundGroup5": {
+    "label": "(Separados por vírgula)",
+    "group": "Sons",
+    "type": "text",
+    "value": ""
+  },
+  "messageTypeSoundGroup5": {
+    "label": "Grupo 5 — Tipo de mensagem",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "all",
+    "options": {
+      "all": "Todas",
+      "default": "Normal",
+      "highlight": "Destacada",
+      "action": "Ação (/me)"
+    }
+  },
+  "soundGroup6": {
+    "label": "Grupo 6 — Sons",
+    "group": "Sons",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+  "userLevelSoundGroup6": {
+    "label": "Grupo 6 — Nível de usuário",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "everyone",
+    "options": {
+      "everyone": "Todos",
+      "subs": "Membros",
+      "vips": "VIPs (só Twitch)",
+      "mods": "Moderadores"
+    }
+  },
+  "specificUsersSoundGroup6Label": {
+    "label": "Grupo 6 — Usuários específicos",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "specificUsersSoundGroup6": {
+    "label": "(Separados por vírgula)",
+    "group": "Sons",
+    "type": "text",
+    "value": ""
+  },
+  "messageTypeSoundGroup6": {
+    "label": "Grupo 6 — Tipo de mensagem",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "all",
+    "options": {
+      "all": "Todas",
+      "default": "Normal",
+      "highlight": "Destacada",
+      "action": "Ação (/me)"
+    }
+  },
+  "soundGroup7": {
+    "label": "Grupo 7 — Sons",
+    "group": "Sons",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+  "userLevelSoundGroup7": {
+    "label": "Grupo 7 — Nível de usuário",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "everyone",
+    "options": {
+      "everyone": "Todos",
+      "subs": "Membros",
+      "vips": "VIPs (só Twitch)",
+      "mods": "Moderadores"
+    }
+  },
+  "specificUsersSoundGroup7Label": {
+    "label": "Grupo 7 — Usuários específicos",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "specificUsersSoundGroup7": {
+    "label": "(Separados por vírgula)",
+    "group": "Sons",
+    "type": "text",
+    "value": ""
+  },
+  "messageTypeSoundGroup7": {
+    "label": "Grupo 7 — Tipo de mensagem",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "all",
+    "options": {
+      "all": "Todas",
+      "default": "Normal",
+      "highlight": "Destacada",
+      "action": "Ação (/me)"
+    }
+  },
+  "soundGroup8": {
+    "label": "Grupo 8 — Sons",
+    "group": "Sons",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+  "userLevelSoundGroup8": {
+    "label": "Grupo 8 — Nível de usuário",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "everyone",
+    "options": {
+      "everyone": "Todos",
+      "subs": "Membros",
+      "vips": "VIPs (só Twitch)",
+      "mods": "Moderadores"
+    }
+  },
+  "specificUsersSoundGroup8Label": {
+    "label": "Grupo 8 — Usuários específicos",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "specificUsersSoundGroup8": {
+    "label": "(Separados por vírgula)",
+    "group": "Sons",
+    "type": "text",
+    "value": ""
+  },
+  "messageTypeSoundGroup8": {
+    "label": "Grupo 8 — Tipo de mensagem",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "all",
+    "options": {
+      "all": "Todas",
+      "default": "Normal",
+      "highlight": "Destacada",
+      "action": "Ação (/me)"
+    }
+  },
+  "soundGroup9": {
+    "label": "Grupo 9 — Sons",
+    "group": "Sons",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+  "userLevelSoundGroup9": {
+    "label": "Grupo 9 — Nível de usuário",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "everyone",
+    "options": {
+      "everyone": "Todos",
+      "subs": "Membros",
+      "vips": "VIPs (só Twitch)",
+      "mods": "Moderadores"
+    }
+  },
+  "specificUsersSoundGroup9Label": {
+    "label": "Grupo 9 — Usuários específicos",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "specificUsersSoundGroup9": {
+    "label": "(Separados por vírgula)",
+    "group": "Sons",
+    "type": "text",
+    "value": ""
+  },
+  "messageTypeSoundGroup9": {
+    "label": "Grupo 9 — Tipo de mensagem",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "all",
+    "options": {
+      "all": "Todas",
+      "default": "Normal",
+      "highlight": "Destacada",
+      "action": "Ação (/me)"
+    }
+  },
+  "soundGroup10": {
+    "label": "Grupo 10 — Sons",
+    "group": "Sons",
+    "type": "sound-input",
+    "value": [],
+    "multiple": true
+  },
+  "userLevelSoundGroup10": {
+    "label": "Grupo 10 — Nível de usuário",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "everyone",
+    "options": {
+      "everyone": "Todos",
+      "subs": "Membros",
+      "vips": "VIPs (só Twitch)",
+      "mods": "Moderadores"
+    }
+  },
+  "specificUsersSoundGroup10Label": {
+    "label": "Grupo 10 — Usuários específicos",
+    "group": "Sons",
+    "type": "hidden"
+  },
+  "specificUsersSoundGroup10": {
+    "label": "(Separados por vírgula)",
+    "group": "Sons",
+    "type": "text",
+    "value": ""
+  },
+  "messageTypeSoundGroup10": {
+    "label": "Grupo 10 — Tipo de mensagem",
+    "group": "Sons",
+    "type": "dropdown",
+    "value": "all",
+    "options": {
+      "all": "Todas",
+      "default": "Normal",
+      "highlight": "Destacada",
+      "action": "Ação (/me)"
+    }
+  },
+  "help": {
+    "label": "Tutorial (inglês): https://youtu.be/RbG10UmKaqM",
+    "group": "Ajuda",
+    "type": "hidden"
+  },
+  "widgetName": {
+    "label": "[Chat Bubbles - v2.11.0 - cópia para YouTube]",
+    "group": "Sobre",
+    "type": "hidden",
+    "value": "Chat Bubbles"
+  },
+  "widgetAuthor": {
+    "label": "Criado por Zaytri",
+    "group": "Sobre",
+    "type": "hidden",
+    "value": "Zaytri"
+  },
+  "widgetVersion": {
+    "label": "Twitch - twitch.tv/zaytri",
+    "group": "Sobre",
+    "type": "hidden",
+    "value": "2.11.0"
+  },
+  "widgetUpdateUrl": {
+    "label": "Twitter / TikTok / Instagram - @imzaytri",
+    "group": "Sobre",
+    "type": "hidden",
+    "value": "https://github.com/TessavWalstijn/se.zaytri-widgets/tree/master/DynamicChatBubbles"
+  },
+  "widgetMore": {
+    "label": "Mais widgets do Zaytri - zaytri.com",
+    "group": "Sobre",
+    "type": "hidden"
+  }
+}

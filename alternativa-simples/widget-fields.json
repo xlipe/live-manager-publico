@@ -1,0 +1,208 @@
+{
+  "bubbleColor": {
+    "type": "colorpicker",
+    "label": "Cor da bolha",
+    "value": "#1f1f2e",
+    "group": "Bolha"
+  },
+  "textColor": {
+    "type": "colorpicker",
+    "label": "Cor do texto",
+    "value": "#ffffff",
+    "group": "Bolha"
+  },
+  "bubbleRadius": {
+    "type": "slider",
+    "label": "Arredondamento (px)",
+    "value": 18,
+    "min": 0,
+    "max": 40,
+    "step": 1,
+    "group": "Bolha"
+  },
+  "bubbleMaxWidth": {
+    "type": "slider",
+    "label": "Largura máxima da bolha (%)",
+    "value": 85,
+    "min": 30,
+    "max": 100,
+    "step": 5,
+    "group": "Bolha"
+  },
+  "bubbleGap": {
+    "type": "slider",
+    "label": "Espaço entre bolhas (px)",
+    "value": 8,
+    "min": 0,
+    "max": 40,
+    "step": 1,
+    "group": "Bolha"
+  },
+  "bubbleAlign": {
+    "type": "dropdown",
+    "label": "Lado das bolhas",
+    "value": "left",
+    "options": {
+      "left": "Esquerda",
+      "right": "Direita",
+      "alternate": "Alternar esquerda/direita"
+    },
+    "group": "Bolha"
+  },
+
+  "fontFamily": {
+    "type": "googleFont",
+    "label": "Fonte",
+    "value": "Nunito",
+    "group": "Texto"
+  },
+  "fontSize": {
+    "type": "slider",
+    "label": "Tamanho da fonte (px)",
+    "value": 22,
+    "min": 12,
+    "max": 48,
+    "step": 1,
+    "group": "Texto"
+  },
+
+  "nickColorMode": {
+    "type": "dropdown",
+    "label": "Cor do nick",
+    "value": "fixed",
+    "options": {
+      "fixed": "Cor fixa (abaixo)",
+      "platform": "Cor que o YouTube envia",
+      "role": "Por cargo (dono / mod / membro)"
+    },
+    "group": "Nick"
+  },
+  "nickColor": {
+    "type": "colorpicker",
+    "label": "Cor de destaque do nick",
+    "value": "#ffd166",
+    "group": "Nick"
+  },
+  "showNickBg": {
+    "type": "checkbox",
+    "label": "Mostrar fundo atrás do nick",
+    "value": true,
+    "group": "Nick"
+  },
+  "nickBgColor": {
+    "type": "colorpicker",
+    "label": "Cor do fundo do nick",
+    "value": "rgba(255, 255, 255, 0.12)",
+    "group": "Nick"
+  },
+  "ownerColor": {
+    "type": "colorpicker",
+    "label": "Cor do nick — Dono do canal",
+    "value": "#ff4d4d",
+    "group": "Nick"
+  },
+  "modColor": {
+    "type": "colorpicker",
+    "label": "Cor do nick — Moderador",
+    "value": "#4da3ff",
+    "group": "Nick"
+  },
+  "memberColor": {
+    "type": "colorpicker",
+    "label": "Cor do nick — Membro",
+    "value": "#2ecc71",
+    "group": "Nick"
+  },
+  "showBadges": {
+    "type": "checkbox",
+    "label": "Mostrar badges (mod, membro, etc.)",
+    "value": true,
+    "group": "Nick"
+  },
+
+  "highlightKeywords": {
+    "type": "text",
+    "label": "Palavras que destacam a mensagem (separe por vírgula)",
+    "value": "@seucanal, seucanal",
+    "group": "Destaque"
+  },
+  "highlightColor": {
+    "type": "colorpicker",
+    "label": "Cor da bolha destacada",
+    "value": "#7b2cbf",
+    "group": "Destaque"
+  },
+  "highlightTextColor": {
+    "type": "colorpicker",
+    "label": "Cor do texto da bolha destacada",
+    "value": "#ffffff",
+    "group": "Destaque"
+  },
+
+  "alertSound": {
+    "type": "sound-input",
+    "label": "Som de alerta (envie um .mp3/.ogg)",
+    "group": "Som"
+  },
+  "alertVolume": {
+    "type": "slider",
+    "label": "Volume (%)",
+    "value": 50,
+    "min": 0,
+    "max": 100,
+    "step": 5,
+    "group": "Som"
+  },
+  "soundMode": {
+    "type": "dropdown",
+    "label": "Quando tocar",
+    "value": "all",
+    "options": {
+      "all": "Em toda mensagem",
+      "highlight": "Só em mensagens destacadas",
+      "none": "Nunca"
+    },
+    "group": "Som"
+  },
+  "soundCooldown": {
+    "type": "number",
+    "label": "Intervalo mínimo entre sons (segundos)",
+    "value": 2,
+    "min": 0,
+    "max": 60,
+    "step": 1,
+    "group": "Som"
+  },
+
+  "ignoredUsers": {
+    "type": "textfield",
+    "label": "Usuários ignorados (um por linha ou separados por vírgula)",
+    "value": "Nightbot, StreamElements",
+    "group": "Filtros"
+  },
+  "ignoredPrefixes": {
+    "type": "text",
+    "label": "Ignorar mensagens que começam com",
+    "value": "!",
+    "group": "Filtros"
+  },
+
+  "maxMessages": {
+    "type": "number",
+    "label": "Máximo de bolhas na tela",
+    "value": 8,
+    "min": 1,
+    "max": 100,
+    "step": 1,
+    "group": "Comportamento"
+  },
+  "messageLifetime": {
+    "type": "number",
+    "label": "Segundos até a bolha sumir (0 = nunca)",
+    "value": 30,
+    "min": 0,
+    "max": 3600,
+    "step": 1,
+    "group": "Comportamento"
+  }
+}

@@ -1,0 +1,1448 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Live Manager</title>
+<link rel="icon" href="/public/marca/ravoque-cor.png" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Paleta da casa (ravoque.com.br, tema escuro): fundo, superfície, blurple. */
+  :root {
+    --bg: #1e1f22; --panel: #2b2d31; --panel2: #383a40; --line: rgba(255, 255, 255, .07);
+    --text: #f2f3f5; --muted: #b5bac1; --accent: #5865f2; --accent2: #3ef2d0; --danger: #ed4245; --ok: #23a559; --warn: #f0b232;
+    --heading: 'Bricolage Grotesque', 'Inter', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 Inter, "Segoe UI", sans-serif; }
+  button, input, select { font: inherit; }
+  h1, h2, h3 { font-family: var(--heading); }
+
+  header { display: flex; align-items: center; gap: 18px; padding: 10px 22px; border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 5; }
+  header .marca { display: flex; align-items: center; gap: 10px; }
+  header .marca img { height: 26px; display: block; }
+  header .marca span { color: var(--muted); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; margin-top: 2px; }
+  header nav { display: flex; gap: 4px; margin-left: 12px; }
+  header nav button { background: transparent; border: 0; color: var(--muted); padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  header nav button.active { background: var(--panel2); color: var(--text); }
+  header .status { margin-left: auto; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+  .dot.ok { background: var(--ok); box-shadow: 0 0 10px var(--ok); }
+  .dot.warn { background: var(--warn); }
+  .dot.err { background: var(--danger); }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+  .card h2 { font-size: 12px; margin: 0 0 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
+  .card .head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .card .head h2 { margin: 0; flex: 1; }
+  .hint { color: var(--muted); font-size: 12.5px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  .btn { background: var(--panel2); color: var(--text); border: 1px solid var(--line); padding: 8px 13px; border-radius: 9px; font-weight: 600; cursor: pointer; }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.danger { color: var(--danger); }
+  .btn.small { padding: 5px 10px; font-size: 12.5px; }
+  .btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.ghost { background: transparent; }
+  input[type=text], input[type=number], select { width: 100%; background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 9px; padding: 8px 10px; }
+  input[type=range] { width: 100%; }
+  .saved { color: var(--ok); font-size: 12.5px; margin-left: auto; opacity: 0; transition: opacity .3s; }
+  .saved.show { opacity: 1; }
+  .pill { font-size: 10px; background: var(--accent); color: #fff; border-radius: 999px; padding: 1px 7px; font-weight: 700; }
+
+  /* ===== Stream Manager ===== */
+  .manager { display: flex; align-items: stretch; height: calc(100vh - 57px); }
+  .manager .grid { flex: 1; min-width: 0; overflow: auto; padding: 16px 22px 40px; display: grid; gap: 14px; grid-template-columns: 1fr 1.25fr 1fr; align-items: start; align-content: start; }
+  .manager .full { grid-column: 1 / -1; }
+  /* coluna do chat: de fora a fora na vertical, largura ajustável pela borda */
+  .chat-col { position: relative; width: var(--chat-w, 400px); min-width: 280px; max-width: 60vw; flex: none; display: flex; flex-direction: column; background: var(--panel); border-left: 1px solid var(--line); }
+  .manager.chat-esq { flex-direction: row-reverse; }
+  .manager.chat-esq .chat-col { border-left: 0; border-right: 1px solid var(--line); }
+  .chat-col .resizer { position: absolute; left: -5px; top: 0; bottom: 0; width: 10px; cursor: col-resize; z-index: 3; }
+  .manager.chat-esq .chat-col .resizer { left: auto; right: -5px; }
+  .chat-col .resizer:hover, .chat-col.resizing .resizer { background: linear-gradient(90deg, transparent, rgba(88, 101, 242, .35), transparent); }
+  .chat-col .chat-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .chat-col .chat-head h2 { margin: 0; flex: 1; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
+  .chat-col .pin { margin: 10px 12px 0; }
+  .chat-col .pin .msg { background: linear-gradient(135deg, rgba(62, 242, 208, .22), rgba(88, 101, 242, .22)); border: 1px solid rgba(62, 242, 208, .55); border-left-width: 4px; }
+  .chat-col .pin .rotulo { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent2); font-weight: 800; margin: 0 2px 4px; }
+  .chat-col .feed { flex: 1; max-height: none; padding: 10px 12px 12px; gap: 6px; scroll-behavior: smooth; }
+  .chat-col .msg { font-size: var(--chat-font, 13.5px); }
+  .chat-col .msg img, .chat-col .msg .ph { width: calc(var(--chat-font, 13.5px) * 2.2); height: calc(var(--chat-font, 13.5px) * 2.2); }
+  .chat-col .msg .t { font-size: calc(var(--chat-font, 13.5px) * .85); }
+  .chat-col .msg .tag { font-size: calc(var(--chat-font, 13.5px) * .78); }
+  .chat-col .fonte { display: inline-flex; gap: 2px; }
+  .chat-col .fonte .btn { padding: 3px 8px; font-size: 12px; }
+  .chat-col .chat-envio { padding: 10px 12px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
+  .chat-col .chat-envio input { font-size: 13.5px; }
+  .chat-col .chat-envio input:disabled { opacity: .6; }
+  .chat-col .novas { position: absolute; left: 50%; bottom: 64px; transform: translateX(-50%); display: none; z-index: 2; box-shadow: 0 6px 18px rgba(0, 0, 0, .4); }
+  .chat-col .novas.show { display: inline-block; }
+  .msg.ev { background: linear-gradient(135deg, rgba(62, 242, 208, .16), rgba(62, 242, 208, .04)); border-left: 4px solid var(--accent2); }
+  .col { display: grid; gap: 14px; align-content: start; min-height: 120px; border-radius: 14px; transition: background .15s; }
+  .col.alvo { background: rgba(88, 101, 242, .08); outline: 1px dashed rgba(88, 101, 242, .5); }
+  @media (max-width: 1400px) { .manager .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 1000px) { .manager .grid { grid-template-columns: 1fr; } }
+  .card[draggable] { cursor: default; }
+  .card .alca { cursor: grab; color: var(--muted); font-size: 16px; line-height: 1; padding: 0 4px; user-select: none; opacity: .55; }
+  .card .alca:hover { opacity: 1; }
+  .card.arrastando { opacity: .45; }
+  .card.antes { box-shadow: 0 -3px 0 0 var(--accent); }
+  .card.depois { box-shadow: 0 3px 0 0 var(--accent); }
+  body.arrastando iframe { pointer-events: none; }
+
+  .cenas { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 4px; }
+  .cena-btn { position: relative; flex: 1 1 auto; min-width: 110px; padding: 9px 12px; border-radius: 10px; background: var(--panel2); border: 1px solid var(--line); text-align: center; cursor: pointer; color: var(--text); }
+  .cena-btn:hover { border-color: var(--accent); }
+  .cena-btn .n { font-family: var(--heading); font-weight: 700; font-size: 14px; display: block; }
+  .cena-btn .s { display: none; }
+  .cena-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 8px 24px rgba(88, 101, 242, .35); }
+  .cena-btn.on .s { color: rgba(255, 255, 255, .75); }
+  .cena-btn.on::before { content: 'AO VIVO'; position: absolute; top: -9px; left: 50%; transform: translateX(-50%); font-size: 9px; letter-spacing: .12em; font-weight: 800; background: var(--danger); color: #fff; padding: 2px 8px; border-radius: 999px; line-height: 1.3; box-shadow: 0 0 0 3px var(--panel); }
+
+  /* quadriculado = transparente: no OBS aparece o jogo; aqui, o xadrez */
+  .frame { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid var(--line);
+    background-color: #2a2c31;
+    background-image: linear-gradient(45deg, #34363c 25%, transparent 25%, transparent 75%, #34363c 75%), linear-gradient(45deg, #34363c 25%, transparent 25%, transparent 75%, #34363c 75%);
+    background-size: 20px 20px; background-position: 0 0, 10px 10px; }
+  .frame::after { content: 'fundo transparente'; position: absolute; right: 8px; bottom: 6px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255, 255, 255, .35); pointer-events: none; }
+  .frame iframe { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; border: 0; transform-origin: 0 0; }
+  .frame iframe.video { width: 100%; height: 100%; transform: none; z-index: 0; pointer-events: none; }
+  .frame iframe.cena { z-index: 1; }
+  .frame.com-video::after { display: none; }
+
+  .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .tile { background: var(--panel2); border-radius: 10px; padding: 10px 12px; }
+  .tile .k { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+  .tile .v { font-family: var(--heading); font-size: 22px; font-weight: 700; margin-top: 2px; }
+  .tile .s { color: var(--muted); font-size: 11.5px; }
+  .bars { display: flex; align-items: flex-end; gap: 2px; height: 40px; margin-top: 10px; }
+  .bars i { flex: 1; background: var(--accent); border-radius: 2px 2px 0 0; min-height: 2px; opacity: .85; }
+  .bars i:last-child { background: var(--accent2); }
+
+  .feed { display: flex; flex-direction: column; gap: 6px; max-height: calc(100vh - 220px); overflow: auto; overflow-anchor: none; }
+  .msg { display: flex; gap: 10px; align-items: flex-start; background: var(--panel2); border-radius: 10px; padding: 7px 10px; font-size: 13.5px; }
+  .msg img, .msg .ph { width: 30px; height: 30px; border-radius: 50%; flex: none; background: var(--line); object-fit: cover; }
+  .msg .who { font-weight: 700; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .tag { font-size: 10.5px; padding: 1px 7px; border-radius: 999px; background: var(--line); color: var(--muted); font-weight: 600; }
+  .tag.dono { background: #e0a800; color: #000; } .tag.moderador { background: #2f7bff; color: #fff; } .tag.membro { background: #2a9d5c; color: #fff; }
+  .tag.sc { background: var(--accent2); color: #000; }
+  .msg .t { color: var(--muted); font-size: 11.5px; margin-left: auto; white-space: nowrap; }
+  .msg .body { word-break: break-word; }
+
+  .sons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+  .som-btn { --cor: var(--accent); background: color-mix(in srgb, var(--cor) 22%, var(--panel2)); border: 1px solid color-mix(in srgb, var(--cor) 45%, transparent); color: var(--text); border-radius: 12px; padding: 14px 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: transform .1s; word-break: break-word; }
+  .som-btn:hover { border-color: var(--cor); }
+  .som-btn.tocando { transform: scale(.94); background: var(--cor); color: #fff; }
+  .membros { display: flex; flex-direction: column; gap: 4px; }
+  .membro { display: flex; align-items: center; gap: 10px; padding: 6px 4px; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+  .membro img, .membro .ph { width: 28px; height: 28px; border-radius: 50%; background: var(--line); object-fit: cover; flex: none; }
+  .membro .n { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .membro b { color: var(--muted); font-weight: 600; font-size: 12px; }
+
+  /* ===== Ficha do viewer (gaveta) ===== */
+  .ficha-fundo { position: fixed; inset: 0; background: rgba(0, 0, 0, .45); z-index: 40; display: flex; justify-content: flex-end; }
+  .ficha { width: min(460px, 92vw); height: 100%; background: var(--panel); border-left: 1px solid var(--line); padding: 18px; overflow: auto; display: flex; flex-direction: column; gap: 14px; }
+  .ficha .topo { display: flex; gap: 12px; align-items: center; }
+  .ficha .topo img, .ficha .topo .ph { width: 56px; height: 56px; border-radius: 50%; background: var(--line); object-fit: cover; flex: none; }
+  .ficha .topo .n { font-family: var(--heading); font-weight: 800; font-size: 18px; }
+  .ficha .fechar { margin-left: auto; }
+  .ficha .dados { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 13px; }
+  .ficha .dados b { color: var(--muted); font-weight: 600; }
+  .ficha .nota { background: var(--panel2); border-radius: 10px; padding: 8px 10px; font-size: 13.5px; display: flex; gap: 8px; align-items: flex-start; }
+  .ficha .nota .t { flex: 1; white-space: pre-wrap; }
+  .ficha .nota .q { color: var(--muted); font-size: 11px; white-space: nowrap; }
+  .ficha textarea { width: 100%; min-height: 64px; background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 9px; padding: 8px 10px; resize: vertical; }
+  .ficha .abas { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+  .ficha .abas button { background: transparent; border: 0; color: var(--muted); padding: 8px 12px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .ficha .abas button.on { color: var(--text); border-bottom-color: var(--accent); }
+  .linha { display: flex; flex-direction: column; }
+  .linha .ev { display: grid; grid-template-columns: 92px 1fr; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .linha .ev .q { color: var(--muted); font-size: 11.5px; }
+  .linha .ev .tipo { font-weight: 700; }
+  .linha .ev .tipo.superchat { color: var(--accent2); } .linha .ev .tipo.membro, .linha .ev .tipo.presente { color: #2a9d5c; } .linha .ev .tipo.inscreveu { color: var(--warn); } .linha .ev .tipo.consentiu, .linha .ev .tipo.aprovado { color: var(--accent); } .linha .ev .tipo.recusado, .linha .ev .tipo.email-expirou { color: var(--danger); } .linha .ev .tipo.pontos { color: var(--accent2); }
+  .linha .ev .d { color: var(--muted); }
+  .clicavel { cursor: pointer; }
+  .clicavel:hover { text-decoration: underline; }
+  .viewers-lista { display: flex; flex-direction: column; gap: 4px; }
+  .viewers-lista .membro { cursor: pointer; }
+  .viewers-lista .membro:hover { background: var(--panel2); border-radius: 8px; }
+  .badge-notas { font-size: 10px; background: var(--accent); color: #fff; border-radius: 999px; padding: 1px 6px; }
+
+  /* ===== Configurações ===== */
+  .config { display: grid; grid-template-columns: 240px 1fr; min-height: calc(100vh - 57px); }
+  .side { border-right: 1px solid var(--line); padding: 16px 12px; background: var(--panel); }
+  .side .grp { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; padding: 12px 10px 6px; }
+  .side button { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: transparent; border: 0; color: var(--text); padding: 8px 10px; border-radius: 8px; cursor: pointer; font-weight: 500; }
+  .side button:hover { background: var(--panel2); }
+  .side button.active { background: var(--panel2); color: #fff; font-weight: 700; }
+  .side button .pill { margin-left: auto; }
+  .content { padding: 18px 22px 60px; display: grid; grid-template-columns: minmax(420px, 640px) 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 1100px) { .content { grid-template-columns: 1fr; } }
+  .content.single { grid-template-columns: 1fr; }
+  details { border-top: 1px solid var(--line); }
+  details:first-of-type { border-top: 0; }
+  summary { cursor: pointer; padding: 11px 0; font-weight: 700; list-style: none; display: flex; align-items: center; gap: 8px; font-family: var(--heading); }
+  summary::before { content: '▸'; color: var(--muted); transition: transform .2s; }
+  details[open] summary::before { transform: rotate(90deg); }
+  .field { display: grid; grid-template-columns: 1fr 210px; gap: 12px; align-items: center; padding: 7px 0 9px; }
+  .field label { font-weight: 500; }
+  .field .note { grid-column: 1 / -1; color: var(--muted); font-size: 12.5px; padding: 4px 0; }
+  .color { display: flex; gap: 6px; align-items: center; }
+  .color input[type=color] { width: 36px; height: 34px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: transparent; }
+  .color input[type=text] { flex: 1; }
+  .sounds { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; }
+  .sound-item { display: flex; align-items: center; gap: 8px; background: var(--panel2); border-radius: 9px; padding: 6px 10px; font-size: 12.5px; }
+  .sound-item span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .img-item { display: flex; align-items: center; gap: 8px; }
+  .img-item img { width: 96px; height: 54px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); background: var(--panel2); }
+  .preview { position: sticky; top: 74px; }
+  .urls code { display: block; background: var(--panel2); padding: 8px 10px; border-radius: 8px; font-size: 12.5px; margin: 6px 0; user-select: all; word-break: break-all; }
+  .recent { font-size: 13px; color: var(--muted); max-height: 260px; overflow: auto; }
+  .recent div { padding: 4px 0; border-bottom: 1px dashed var(--line); }
+  .recent b { color: var(--text); }
+</style>
+</head>
+<body>
+<header>
+  <div class="marca"><img src="/public/marca/ravoque-branco.png" alt="ravoque" /><span>live</span></div>
+  <nav id="nav">
+    <button data-view="manager" onclick="go('manager')">Stream Manager</button>
+    <button data-view="crm" onclick="go('crm')">CRM</button>
+    <button data-view="config" onclick="go('config')">Configurações</button>
+  </nav>
+  <div class="status">
+    <button class="btn small" id="overlaysBtn" title="Esconde ou mostra todos os overlays abertos no OBS, na hora" onclick="toggleOverlays()">overlays…</button>
+    <span class="dot" id="dot"></span><span id="statusText">carregando…</span>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<script>
+const $ = s => document.querySelector(s)
+const el = (tag, attrs = {}, children = []) => {
+  const e = document.createElement(tag)
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') e.className = v
+    else if (k === 'html') e.innerHTML = v
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v)
+    else if (v !== undefined && v !== null) e.setAttribute(k, v)
+  }
+  for (const c of [].concat(children)) if (c != null) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c)
+  return e
+}
+const api = async (url, method = 'GET', body) => {
+  const r = await fetch(url, { method, headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined })
+  return r.json()
+}
+const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+const hora = ts => new Date(ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+const duracao = ms => { const m = Math.floor(ms / 60000); return m < 60 ? `${m} min` : `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}` }
+const saved = node => { node.classList.add('show'); setTimeout(() => node.classList.remove('show'), 1500) }
+const prefer = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v) } catch (e) { return null } }
+
+let widgets = []
+let status = {}
+const stop = { timers: [], sources: [], listeners: [] }
+
+/* ---------- navegação: #manager | #config/servidor | #config/cenas | #config/cena/<id> | #config/<widget> ---------- */
+
+async function init() {
+  widgets = (await api('/api/widgets')).filter(w => w.id !== 'telas' && w.id !== 'sons') // telas → cenas; sons → lista de sons
+  pollStatus()
+  setInterval(pollStatus, 4000)
+  window.addEventListener('hashchange', route)
+  route()
+}
+
+function go(view) { location.hash = view === 'config' ? (prefer('ultimaConfig') || 'config/servidor') : view === 'crm' ? (prefer('ultimoCrm') || 'crm/viewers') : 'manager' }
+
+function onStatus(fn) { document.addEventListener('status', fn); stop.listeners.push(fn) }
+
+function route() {
+  const h = location.hash.replace('#', '') || 'manager'
+  const [view, ...rest] = h.split('/')
+  for (const b of document.querySelectorAll('#nav button')) b.classList.toggle('active', b.dataset.view === (view === 'config' ? 'config' : view === 'crm' ? 'crm' : 'manager'))
+  for (const t of stop.timers) clearInterval(t)
+  for (const s of stop.sources) s.close()
+  for (const f of stop.listeners) document.removeEventListener('status', f)
+  stop.timers = []; stop.sources = []; stop.listeners = []
+  const main = $('#main')
+  main.innerHTML = ''
+  main.className = ''
+  if (view === 'config') { prefer('ultimaConfig', h); renderConfig(main, rest) }
+  else if (view === 'crm') { prefer('ultimoCrm', h); renderCrm(main, rest) }
+  else renderManager(main)
+}
+
+/* ---------- status (cabeçalho) ---------- */
+
+let overlaysOn = true
+async function toggleOverlays() { await api('/api/overlays', 'POST', { on: !overlaysOn }); pollStatus() }
+
+async function pollStatus() {
+  try {
+    const s = await api('/api/status')
+    status = s
+    const st = s.status || {}
+    $('#dot').className = 'dot ' + (st.state === 'conectado' ? 'ok' : st.error ? 'err' : 'warn')
+    const extras = Object.values(s.plataformas || {}).filter(p => p && p.state !== 'parado' && p.messages != null).map(p => `${p.platform} ${p.state === 'conectado' ? (p.messages || 0) + ' msgs' : p.state}`)
+    $('#statusText').textContent = `${st.state || '…'}${st.videoId ? ' · ' + st.videoId : ''} · ${st.messages || 0} msgs${extras.length ? ' · ' + extras.join(' · ') : ''}`
+    overlaysOn = s.overlaysOn !== false
+    const ob = $('#overlaysBtn')
+    ob.textContent = overlaysOn ? 'overlays ligados' : 'overlays DESLIGADOS'
+    ob.className = 'btn small' + (overlaysOn ? '' : ' danger')
+    document.dispatchEvent(new CustomEvent('status', { detail: s }))
+  } catch (e) {
+    $('#statusText').textContent = 'servidor desligado?'
+    $('#dot').className = 'dot err'
+  }
+}
+
+/* ============================================================
+   FICHA DO VIEWER (gaveta à direita, abre de qualquer lugar)
+   ============================================================ */
+
+async function abrirFicha(channelId) {
+  if (!channelId) return
+  document.querySelector('.ficha-fundo')?.remove()
+  let f = await api(`/api/crm/viewer/${encodeURIComponent(channelId)}`)
+  if (f.error) { alert('Ainda não tenho ficha dessa pessoa (ela aparece quando manda a primeira mensagem).'); return }
+  const fundo = el('div', { class: 'ficha-fundo', onclick: e => { if (e.target === fundo) fundo.remove() } })
+  const box = el('div', { class: 'ficha' })
+  fundo.appendChild(box)
+  document.body.appendChild(fundo)
+  const fmt = ts => ts ? new Date(ts).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'
+
+  let aba = 'resumo'
+  const desenhar = () => {
+    box.innerHTML = ''
+    const nomeReal = [f.primeiroNome, f.sobrenome].filter(Boolean).join(' ')
+    const abas = el('div', { class: 'abas' }, [['resumo', 'Resumo'], ['atividades', `Atividades${f.atividades?.length ? ' · ' + f.atividades.length : ''}`], ['notas', `Notas${f.notas?.length ? ' · ' + f.notas.length : ''}`], ['dados', 'Dados']].map(([id, nome]) => el('button', { class: aba === id ? 'on' : '', onclick: () => { aba = id; desenhar() } }, nome)))
+    box.append(
+      el('div', { class: 'topo' }, [
+        f.avatar ? el('img', { src: f.avatar, alt: '' }) : el('span', { class: 'ph' }),
+        el('div', {}, [
+          el('div', { class: 'n' }, f.nome || channelId),
+          el('div', { class: 'hint' }, [nomeReal ? nomeReal + ' · ' : '', ...(f.cargos || []).map(c => c + ' '), f.redeUserId ? '· na rede' : ''].join('')),
+        ]),
+        el('button', { class: 'btn small ghost fechar', onclick: () => fundo.remove() }, '✕'),
+      ]),
+      abas,
+    )
+    const r = f.resumo || {}
+    if (aba === 'resumo') {
+      box.append(el('div', { class: 'card' }, [
+        el('h2', {}, 'Resumo'),
+        el('div', { class: 'dados' }, [
+          el('b', {}, 'primeira vez'), el('span', {}, fmt(f.primeiraVez)),
+          el('b', {}, 'última vez'), el('span', {}, fmt(f.ultimaVez)),
+          el('b', {}, 'mensagens'), el('span', {}, String(f.mensagens)),
+          el('b', {}, 'lives'), el('span', {}, String(f.lives)),
+          el('b', {}, 'inscrito desde'), el('span', {}, r.inscritoEm ? fmt(r.inscritoEm) : 'não visto na lista de inscritos'),
+          el('b', {}, 'membro'), el('span', {}, r.membroDesde ? `desde ${fmt(r.membroDesde)}` : (f.cargos || []).includes('membro') ? 'sim (antes do registro)' : 'não'),
+          el('b', {}, 'super chats'), el('span', {}, String(r.superchats || 0)),
+          el('b', {}, 'pontos'), el('span', {}, String(f.pontos || 0)),
+          el('b', {}, 'e-mail'), el('span', {}, f.emailStatus === 'confirmado' ? 'confirmado (SIM)' : f.temPendente ? 'esperando SIM' : 'não'),
+          el('b', {}, 'na rede'), el('span', {}, f.redeUserId ? 'sim' : 'não'),
+        ]),
+      ]))
+      if ((f.notas || []).length) box.append(el('div', { class: 'card' }, [el('h2', {}, 'Última nota'), el('div', { class: 'nota' }, [el('span', { class: 't' }, f.notas[0].texto), el('span', { class: 'q' }, fmt(f.notas[0].criadaEm))])]))
+      if (f.pontos) box.append(el('div', { class: 'row' }, [el('button', { class: 'btn small ghost danger', onclick: async () => { const m = prompt('Zerar os pontos dessa pessoa? Motivo (só pra você):'); if (m === null) return; f = await api(`/api/crm/viewer/${encodeURIComponent(channelId)}/zerar-pontos`, 'POST', { motivo: m }); desenhar() } }, 'zerar pontos')]))
+    }
+    if (aba === 'atividades') {
+      const NOME = { 'primeira-vez': 'primeira vez no chat', live: 'apareceu na live', superchat: 'Super Chat', membro: 'membro', presente: 'presente de membro', inscreveu: 'se inscreveu no canal', consentiu: 'disse SIM', aprovado: 'aprovado na catraca', recusado: 'recusado na catraca', convidado: 'convite pedido à rede', 'convite-link': 'link do convite', 'entrou-na-rede': 'entrou na rede', pontos: 'pontos', 'email-expirou': 'e-mail apagado (retenção)' }
+      const linha = el('div', { class: 'linha' })
+      for (const a of f.atividades || []) linha.appendChild(el('div', { class: 'ev' }, [
+        el('span', { class: 'q' }, fmt(a.at)),
+        el('div', {}, [el('span', { class: 'tipo ' + a.tipo }, NOME[a.tipo] || a.tipo), a.valor ? el('span', { class: 'd' }, ` · ${a.valor}`) : null, a.texto ? el('div', { class: 'd' }, `“${a.texto}”`) : null]),
+      ]))
+      if (!(f.atividades || []).length) linha.appendChild(el('p', { class: 'hint' }, 'Nada registrado ainda.'))
+      box.append(el('div', { class: 'card' }, [el('h2', {}, 'Histórico'), linha]))
+    }
+
+    // notas internas — o que o Filipe memoriza por conta própria
+    const notas = el('div', { style: 'display:flex;flex-direction:column;gap:6px' })
+    for (const n of f.notas || []) {
+      notas.appendChild(el('div', { class: 'nota' }, [
+        el('span', { class: 't' }, n.texto), el('span', { class: 'q' }, fmt(n.criadaEm)),
+        el('button', { class: 'btn small ghost danger', title: 'apagar nota', onclick: async () => { f = await api(`/api/crm/viewer/${encodeURIComponent(channelId)}/nota/${n.id}`, 'DELETE'); desenhar() } }, '✕'),
+      ]))
+    }
+    if (!(f.notas || []).length) notas.appendChild(el('p', { class: 'hint' }, 'Nenhuma nota ainda. Escreva o que quiser lembrar dessa pessoa.'))
+    // o campo só aparece quando você quer escrever; some ao salvar ou cancelar
+    const ta = el('textarea', { placeholder: 'o que lembrar dessa pessoa… (Ctrl+Enter salva, Esc cancela)', style: 'display:none' })
+    const novaBtn = el('button', { class: 'btn small ghost' }, '+ nota')
+    const acoes = el('div', { class: 'row', style: 'display:none;margin-top:6px' })
+    const fecharEditor = () => { ta.style.display = 'none'; acoes.style.display = 'none'; novaBtn.style.display = ''; ta.value = '' }
+    const abrirEditor = () => { ta.style.display = ''; acoes.style.display = ''; novaBtn.style.display = 'none'; ta.focus() }
+    const salvarNota = async () => { if (!ta.value.trim()) return fecharEditor(); f = await api(`/api/crm/viewer/${encodeURIComponent(channelId)}/nota`, 'POST', { texto: ta.value.trim() }); desenhar() }
+    ta.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) salvarNota(); if (e.key === 'Escape') fecharEditor() })
+    novaBtn.addEventListener('click', abrirEditor)
+    acoes.append(el('button', { class: 'btn small primary', onclick: salvarNota }, 'Salvar nota'), el('button', { class: 'btn small ghost', onclick: fecharEditor }, 'cancelar'))
+    if (aba === 'notas') box.appendChild(el('div', { class: 'card' }, [el('div', { class: 'head' }, [el('h2', {}, 'Notas internas'), novaBtn]), notas, ta, acoes]))
+
+    // dados com consentimento
+    const emailIn = el('input', { type: 'text', value: f.email || '', placeholder: 'sem e-mail' })
+    const pnIn = el('input', { type: 'text', value: f.primeiroNome || '', placeholder: 'vem do perfil na rede' })
+    const snIn = el('input', { type: 'text', value: f.sobrenome || '', placeholder: '' })
+    const salvarDados = async () => { f = await api(`/api/crm/viewer/${encodeURIComponent(channelId)}`, 'POST', { email: emailIn.value.trim(), primeiroNome: pnIn.value.trim(), sobrenome: snIn.value.trim() }); desenhar() }
+    if (aba === 'dados') box.appendChild(el('div', { class: 'card' }, [
+      el('h2', {}, 'Dados pessoais (só com consentimento)'),
+      el('div', { class: 'field' }, [el('label', {}, 'E-mail'), emailIn]),
+      el('div', { class: 'field' }, [el('label', {}, 'Nome'), pnIn]),
+      el('div', { class: 'field' }, [el('label', {}, 'Sobrenome'), snIn]),
+      el('p', { class: 'hint' }, f.emailStatus === 'confirmado'
+        ? `Consentiu em ${fmt(f.consentimentoEm)}${f.consentimentoTexto ? ` com "${f.consentimentoTexto}"` : ''} · ${f.convidadoEm ? `convite enviado em ${fmt(f.convidadoEm)}` : f.aprovadoEm ? `aprovado em ${fmt(f.aprovadoEm)}, convite aguardando envio` : 'na catraca, esperando sua decisão'}.`
+        : f.temPendente ? 'E-mail detectado no chat, esperando o SIM (1 minuto).' : 'Sem e-mail. Se você digitar um aqui, conta como consentimento dado a você diretamente.'),
+      el('div', { class: 'row' }, [
+        el('button', { class: 'btn small', onclick: salvarDados }, 'Salvar dados'),
+        f.aprovadoEm && f.email ? el('button', { class: 'btn small', onclick: async () => { const r = await api(`/api/crm/viewer/${encodeURIComponent(channelId)}/convidar`, 'POST', {}); const e = r.envio || {}; alert(e.ok ? (e.avisou ? 'Convite enviado.' : `Convite gerado, e-mail não saiu: ${e.porqueNaoAvisou}`) : `Não saiu: ${e.erro}`); f = await api(`/api/crm/viewer/${encodeURIComponent(channelId)}`); desenhar() } }, f.convidadoEm ? 'Reenviar convite' : 'Enviar convite') : null,
+      ]),
+    ]))
+    // vínculo com a rede: automático quando a pessoa entra pelo convite; na mão, buscando o perfil
+    const busca = el('input', { type: 'text', placeholder: 'buscar perfil na rede (nome, @usuário)…' })
+    const resultados = el('div', { class: 'membros' })
+    busca.addEventListener('input', () => { clearTimeout(busca._t); busca._t = setTimeout(async () => {
+      resultados.innerHTML = ''
+      if (busca.value.trim().length < 2) return
+      const r = await api(`/api/crm/rede/membros?q=${encodeURIComponent(busca.value.trim())}`)
+      if (!r.ok) { resultados.appendChild(el('p', { class: 'hint' }, r.erro || 'sem resposta da rede')); return }
+      if (!r.membros.length) resultados.appendChild(el('p', { class: 'hint' }, 'ninguém com esse nome na rede'))
+      for (const m of r.membros) resultados.appendChild(el('div', { class: 'membro clicavel', onclick: async () => { f = await api(`/api/crm/viewer/${encodeURIComponent(channelId)}/vincular`, 'POST', { userId: m.userId, username: m.username, handle: m.handle, displayName: m.displayName }); desenhar() } }, [
+        m.avatarUrl ? el('img', { src: m.avatarUrl, alt: '' }) : el('span', { class: 'ph' }), el('span', { class: 'n' }, m.displayName), el('b', {}, '@' + (m.username || m.handle)),
+      ]))
+    }, 300) })
+    box.appendChild(el('div', { class: 'card' }, [
+      el('h2', {}, 'Perfil na rede'),
+      f.redeUserId ? el('p', { class: 'hint' }, `Vinculado ao perfil ${f.primeiroNome ? `"${f.primeiroNome}" ` : ''}(${f.redeUserId}). Só você vê isto.`) : el('p', { class: 'hint' }, 'Sem vínculo. Quem entra pelo convite da live é vinculado sozinho; pra quem já era da casa, busca o perfil aqui.'),
+      busca, resultados,
+    ]))
+
+    box.appendChild(el('div', { class: 'row', style: 'margin-top:auto' }, [
+      el('button', { class: 'btn small danger', onclick: async () => { if (!confirm(`Apagar TUDO de ${f.nome}? Ficha, notas e dados. Não volta.`)) return; await api(`/api/crm/viewer/${encodeURIComponent(channelId)}`, 'DELETE'); fundo.remove() } }, 'Apagar tudo dessa pessoa'),
+    ]))
+  }
+  desenhar()
+}
+
+/* ============================================================
+   STREAM MANAGER
+   ============================================================ */
+
+async function renderManager(main) {
+  main.className = 'manager' + (prefer('chatLado') === 'esq' ? ' chat-esq' : '')
+  const grid = el('div', { class: 'grid' })
+  const chatCol = el('aside', { class: 'chat-col', style: `--chat-w: ${prefer('chatW') || 400}px; --chat-font: ${prefer('chatFont') || 13.5}px` })
+  main.append(grid, chatCol)
+
+  // --- cenas
+  const cenasBox = el('div', { class: 'cenas' })
+  const desenharCenas = s => {
+    cenasBox.innerHTML = ''
+    const lista = [{ id: 'principal', nome: 'Principal', s: 'ilha + chat, sem tela' }, ...(s.cenas || []).map(c => ({ ...c, s: 'tela de intervalo' }))]
+    for (const c of lista) {
+      cenasBox.appendChild(el('button', { class: 'cena-btn' + (c.id === s.cena ? ' on' : ''), onclick: async () => { await api('/api/cenas', 'POST', { acao: 'ativar', id: c.id }); pollStatus() } }, [
+        el('span', { class: 'n' }, c.nome), el('span', { class: 's' }, c.s),
+      ]))
+    }
+  }
+  onStatus(e => desenharCenas(e.detail))
+  if (status.cenas) desenharCenas(status)
+
+  // --- cena: só o seletor (o preview saiu em 23/09: o embed do YouTube repetia o VOD com a live fora do ar, e o chat do painel já cobre)
+  const previewCard = el('div', { class: 'card' }, [
+    el('div', { class: 'head' }, [el('h2', {}, 'Cena no ar'), el('button', { class: 'btn small ghost', onclick: () => { location.hash = 'config/cenas' } }, 'gerenciar')]),
+    cenasBox,
+  ])
+
+  const chatRapido = el('div', { class: 'card' }, [el('h2', {}, 'Chat rápido'), el('div', { class: 'hint' }, 'carregando…')])
+  renderChatRapido(chatRapido)
+
+  const sonsGrid = el('div', { class: 'sons-grid' })
+  const modulos = el('div', { class: 'card' }, [
+    el('div', { class: 'head' }, [el('h2', {}, 'Sons'), el('button', { class: 'btn small ghost', onclick: () => { location.hash = 'config/sons' } }, 'gerenciar')]),
+    sonsGrid,
+  ])
+  api('/api/sons').then(d => {
+    sonsGrid.innerHTML = ''
+    if (!d.sons.length) sonsGrid.appendChild(el('p', { class: 'hint' }, 'Nenhum som ainda. Em Configurações → Sons você sobe os arquivos.'))
+    for (const som of d.sons) sonsGrid.appendChild(el('button', { class: 'som-btn', style: som.cor ? `--cor:${som.cor}` : '', onclick: async e => { e.currentTarget.classList.add('tocando'); await api('/api/som', 'POST', { id: som.id }); setTimeout(() => e.target.classList.remove('tocando'), 600) } }, som.nome))
+  })
+
+  // --- coluna do chat (lateral, de fora a fora)
+  const chatFeed = el('div', { class: 'feed' })
+  const pin = el('div', { class: 'pin' })
+  const novasBtn = el('button', { class: 'btn small primary novas' }, '↓ novas mensagens')
+  const resizer = el('div', { class: 'resizer', title: 'arraste para ajustar a largura' })
+  const envioIn = el('input', { type: 'text', placeholder: 'mandar mensagem como o canal…', maxlength: '200' })
+  const envioMsg = el('span', { class: 'hint', style: 'display:none' })
+  const envio = el('div', { class: 'chat-envio' }, [envioIn, envioMsg])
+  envioIn.addEventListener('keydown', async e => {
+    if (e.key !== 'Enter' || !envioIn.value.trim()) return
+    const texto = envioIn.value.trim()
+    envioIn.disabled = true
+    const r = await api('/api/chat/enviar', 'POST', { texto })
+    envioIn.disabled = false
+    if (r.error) { envioMsg.textContent = r.error; envioMsg.style.display = ''; envioMsg.style.color = 'var(--danger)'; return }
+    envioMsg.style.display = 'none'
+    envioIn.value = ''
+    envioIn.focus()
+  })
+  chatCol.append(
+    resizer,
+    el('div', { class: 'chat-head' }, [
+      el('h2', {}, 'Chat ao vivo'), el('span', { class: 'hint', id: 'chatTotal' }),
+      el('span', { class: 'fonte' }, [
+        el('button', { class: 'btn ghost', title: 'Diminuir a letra do chat', onclick: () => ajustarFonte(-1) }, 'A−'),
+        el('button', { class: 'btn ghost', title: 'Aumentar a letra do chat', onclick: () => ajustarFonte(1) }, 'A+'),
+      ]),
+      el('button', { class: 'btn small ghost', title: 'Trocar o chat de lado', onclick: () => { prefer('chatLado', main.classList.contains('chat-esq') ? 'dir' : 'esq'); main.classList.toggle('chat-esq') } }, '⇄ lado'),
+    ]),
+    pin, chatFeed, novasBtn, envio,
+  )
+  // tamanho da letra do chat (10 a 24 px), lembrado no navegador
+  function ajustarFonte(delta) {
+    const atual = parseFloat(chatCol.style.getPropertyValue('--chat-font')) || 13.5
+    const novo = Math.max(10, Math.min(24, atual + delta))
+    chatCol.style.setProperty('--chat-font', novo + 'px')
+    prefer('chatFont', novo)
+    rolar()
+  }
+  // largura ajustável
+  resizer.addEventListener('mousedown', e => {
+    e.preventDefault()
+    chatCol.classList.add('resizing')
+    document.body.style.cursor = 'col-resize'
+    const move = ev => { const bruto = main.classList.contains('chat-esq') ? ev.clientX : window.innerWidth - ev.clientX; const w = Math.max(280, Math.min(window.innerWidth * .6, bruto)); chatCol.style.setProperty('--chat-w', w + 'px') }
+    const up = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); chatCol.classList.remove('resizing'); document.body.style.cursor = ''; prefer('chatW', parseInt(chatCol.style.getPropertyValue('--chat-w'))) }
+    document.addEventListener('mousemove', move)
+    document.addEventListener('mouseup', up)
+  })
+  // rolagem: cola no fim; se você subiu pra ler, avisa em vez de puxar
+  const noFim = () => chatFeed.scrollHeight - chatFeed.scrollTop - chatFeed.clientHeight < 40
+  const rolar = () => { chatFeed.scrollTop = chatFeed.scrollHeight; novasBtn.classList.remove('show') }
+  chatFeed.addEventListener('scroll', () => { if (noFim()) novasBtn.classList.remove('show') })
+  novasBtn.addEventListener('click', rolar)
+  const chegou = (node, forcar) => {
+    const estava = noFim()
+    chatFeed.appendChild(node)
+    while (chatFeed.children.length > 300) chatFeed.firstChild.remove()
+    if (estava || forcar) rolar(); else novasBtn.classList.add('show')
+  }
+  const fixar = ev => { pin.innerHTML = ''; pin.append(el('div', { class: 'rotulo' }, 'último evento'), msgEl(ev, true)) }
+
+  // --- coluna C: estatísticas + membros + eventos
+  const tiles = el('div', { class: 'tiles' })
+  const bars = el('div', { class: 'bars' })
+  const statsCard = el('div', { class: 'card' }, [el('h2', {}, 'Estatísticas da live'), tiles, bars])
+  const membros = el('div', { class: 'membros' }, 'Ninguém falou ainda.')
+  const membrosTotal = el('span', { class: 'hint' })
+  const membrosCard = el('div', { class: 'card' }, [
+    el('div', { class: 'head' }, [el('h2', {}, 'Membros no chat'), membrosTotal]),
+    membros,
+    el('p', { class: 'hint', style: 'margin:10px 0 0' }, 'Quem mais fala nesta live. Clique em alguém (aqui ou no chat) para abrir a ficha com suas notas.'),
+    el('button', { class: 'btn small ghost', style: 'margin-top:6px', onclick: () => { location.hash = 'crm/viewers' } }, 'abrir o CRM'),
+  ])
+  const inscritosBox = el('div', { class: 'membros' })
+  const inscritosCard = el('div', { class: 'card' }, [el('h2', {}, 'Inscritos recentes'), inscritosBox])
+
+  // blocos arrastáveis entre três colunas; a disposição fica neste navegador
+  const blocos = { preview: previewCard, chatRapido, modulos, stats: statsCard, membros: membrosCard, inscritos: inscritosCard }
+  const padrao = { a: ['preview', 'chatRapido'], b: ['stats', 'membros'], c: ['inscritos', 'modulos'] }
+  let layout = padrao
+  try { const salvo = JSON.parse(prefer('layoutManager') || 'null'); if (salvo && salvo.a && salvo.b && salvo.c) layout = salvo } catch (e) {}
+  const cols = { a: el('div', { class: 'col', 'data-col': 'a' }), b: el('div', { class: 'col', 'data-col': 'b' }), c: el('div', { class: 'col', 'data-col': 'c' }) }
+  const usados = new Set()
+  for (const k of Object.keys(cols)) for (const id of layout[k]) if (blocos[id] && !usados.has(id)) { cols[k].appendChild(blocos[id]); usados.add(id) }
+  for (const id of Object.keys(blocos)) if (!usados.has(id)) cols.a.appendChild(blocos[id]) // bloco novo que o layout salvo não conhece
+  const salvarLayout = () => prefer('layoutManager', JSON.stringify(Object.fromEntries(Object.entries(cols).map(([k, c]) => [k, [...c.children].map(x => x.dataset.bloco)]))))
+  let arrastado = null
+  for (const [id, card] of Object.entries(blocos)) {
+    card.dataset.bloco = id
+    card.setAttribute('draggable', 'true')
+    const head = card.querySelector('.head') || card.insertBefore(el('div', { class: 'head' }, [card.querySelector('h2')]), card.firstChild)
+    head.prepend(el('span', { class: 'alca', title: 'arraste para reorganizar' }, '⠿'))
+    card.addEventListener('dragstart', e => { arrastado = card; card.classList.add('arrastando'); document.body.classList.add('arrastando'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', id) })
+    card.addEventListener('dragend', () => { card.classList.remove('arrastando'); document.body.classList.remove('arrastando'); document.querySelectorAll('.antes,.depois').forEach(x => x.classList.remove('antes', 'depois')); document.querySelectorAll('.col.alvo').forEach(x => x.classList.remove('alvo')); arrastado = null })
+    card.addEventListener('dragover', e => {
+      if (!arrastado || arrastado === card) return
+      e.preventDefault()
+      const r = card.getBoundingClientRect()
+      const antes = e.clientY < r.top + r.height / 2
+      card.classList.toggle('antes', antes); card.classList.toggle('depois', !antes)
+    })
+    card.addEventListener('dragleave', () => card.classList.remove('antes', 'depois'))
+    card.addEventListener('drop', e => {
+      if (!arrastado || arrastado === card) return
+      e.preventDefault(); e.stopPropagation()
+      const r = card.getBoundingClientRect()
+      card.parentNode.insertBefore(arrastado, e.clientY < r.top + r.height / 2 ? card : card.nextSibling)
+      card.classList.remove('antes', 'depois')
+      salvarLayout()
+    })
+  }
+  for (const col of Object.values(cols)) {
+    col.addEventListener('dragover', e => { if (!arrastado) return; e.preventDefault(); col.classList.add('alvo') })
+    col.addEventListener('dragleave', () => col.classList.remove('alvo'))
+    col.addEventListener('drop', e => { if (!arrastado) return; e.preventDefault(); col.appendChild(arrastado); col.classList.remove('alvo'); salvarLayout() })
+  }
+  grid.append(cols.a, cols.b, cols.c)
+  modulos.appendChild(el('button', { class: 'btn small ghost', style: 'margin-top:8px', title: 'Volta os blocos para a disposição original', onclick: () => { prefer('layoutManager', ''); route() } }, 'resetar layout dos blocos'))
+
+  // --- dados da live
+  const tile = (k, v, s) => el('div', { class: 'tile' }, [el('div', { class: 'k' }, k), el('div', { class: 'v' }, String(v)), s ? el('div', { class: 's' }, s) : null])
+  async function atualizar() {
+    let d
+    try { d = await api('/api/live') } catch (e) { return }
+    const st = d.status || {}
+    const moedas = Object.entries(d.superchats.porMoeda).map(([m, v]) => `${m} ${v.toFixed(2)}`).join(' · ')
+    tiles.innerHTML = ''
+    tiles.append(
+      tile('Live', st.state === 'conectado' ? 'no ar' : st.state || '—', d.videoId ? `há ${duracao(Date.now() - d.inicio)}` : 'aguardando'),
+      tile('Espectadores', d.espectadores != null ? d.espectadores : '—', d.espectadores != null ? 'ao vivo agora' : (d.google && d.google.conectado ? 'sem live no ar' : 'precisa da conta Google')),
+      tile('Mensagens', d.mensagens, `${d.mensagensPorMinuto}/min`),
+      tile('Participantes', d.participantes, `${d.ativosUltimos5} ativos agora`),
+      tile('Super Chats', d.superchats.quantidade, moedas || 'nenhum'),
+      tile('Membros novos', d.membros.novos, `${d.membros.presentes} presenteado(s)`),
+      tile('Conexões', d.overlays, 'overlays + painel'),
+    )
+    const max = Math.max(1, ...d.serie)
+    bars.innerHTML = d.serie.map(v => `<i style="height:${Math.max(4, (v / max) * 100)}%" title="${v}"></i>`).join('')
+    $('#chatTotal').textContent = `${d.mensagens} msgs`
+    const g = d.google || {}
+    envio.style.display = g.configurado ? '' : 'none'
+    envioIn.placeholder = g.conectado ? 'mandar mensagem como o canal… (Enter envia)' : 'conecte a conta Google em Configurações → Contas para escrever aqui'
+    envioIn.disabled = !g.conectado
+    if (inscritosBox) {
+      inscritosBox.innerHTML = ''
+      const lista = (d.inscritos && d.inscritos.recentes) || []
+      if (!g.conectado) inscritosBox.appendChild(el('p', { class: 'hint' }, 'Conecte a conta Google em Configurações → Contas.'))
+      else if (d.inscritos && d.inscritos.erro) inscritosBox.appendChild(el('p', { class: 'hint', style: 'color:var(--danger)' }, d.inscritos.erro))
+      else if (!lista.length) inscritosBox.appendChild(el('p', { class: 'hint' }, 'Nenhum inscrito recente visível (só inscrições públicas aparecem).'))
+      for (const i of lista.slice(0, 15)) inscritosBox.appendChild(el('div', { class: 'membro' }, [
+        i.avatar ? el('img', { src: i.avatar, alt: '' }) : el('span', { class: 'ph' }),
+        el('span', { class: 'n' }, i.nome || ''), el('b', {}, hora(i.em)),
+      ]))
+    }
+    if (!chatFeed.dataset.pronto) {
+      chatFeed.dataset.pronto = '1'
+      const linha = [...d.chat.map(m => ({ ...m, _ev: false })), ...d.eventos.map(e => ({ ...e, _ev: true }))].sort((a, b) => a.at - b.at)
+      for (const it of linha) chatFeed.appendChild(msgEl(it, it._ev))
+      if (!linha.length) chatFeed.appendChild(el('p', { class: 'hint', style: 'text-align:center;margin:20px 0' }, 'Nenhuma mensagem ainda.'))
+      if (d.eventos.length) fixar(d.eventos[0])
+      rolar()
+    }
+    membros.innerHTML = ''
+    membrosTotal.textContent = `${d.participantes} nesta live · ${(d.crm && d.crm.totais && d.crm.totais.total) || 0} no CRM`
+    const pend = (d.crm && d.crm.pendentes) || []
+    if (pend.length) {
+      membros.appendChild(el('div', { class: 'hint', style: 'margin:2px 0 4px;color:var(--warn)' }, `esperando SIM (${pend.length}) — 1 minuto`))
+      for (const v of pend) membros.appendChild(el('div', { class: 'membro clicavel', style: 'border-left:3px solid var(--warn);padding-left:8px', onclick: () => abrirFicha(v.channelId) }, [
+        v.avatar ? el('img', { src: v.avatar, alt: '' }) : el('span', { class: 'ph' }), el('span', { class: 'n' }, v.nome), el('b', {}, 'SIM?'),
+      ]))
+    }
+    if (d.crm && d.crm.totais && d.crm.totais.naCatraca) membros.appendChild(el('div', { class: 'membro clicavel', style: 'border-left:3px solid var(--accent2);padding-left:8px', onclick: () => { location.hash = 'crm/catraca' } }, [el('span', { class: 'n' }, `${d.crm.totais.naCatraca} na catraca esperando sua decisão`), el('b', {}, 'abrir →')]))
+    if (!d.maisAtivos.length) membros.textContent = 'Ninguém falou ainda.'
+    for (const p of d.maisAtivos) membros.appendChild(el('div', { class: 'membro clicavel', onclick: () => abrirFicha(p.channelId) }, [
+      p.avatar ? el('img', { src: p.avatar, alt: '' }) : el('span', { class: 'ph' }),
+      el('span', { class: 'n' }, p.nome), ...(p.cargos || []).map(c => el('span', { class: 'tag ' + c }, c)), el('b', {}, `${p.mensagens} msg`),
+    ]))
+  }
+  atualizar()
+  stop.timers.push(setInterval(atualizar, 5000))
+
+  const es = new EventSource('/events?widget=painel')
+  stop.sources.push(es)
+  es.onmessage = m => {
+    try {
+      const p = JSON.parse(m.data)
+      if (p.kind === 'crm') {
+        const textos = { consentiu: ['disse SIM: e-mail registrado, foi pra catraca', 'consentimento'], pendente: ['mandou um e-mail no chat; pedi o SIM', 'esperando SIM'], 'entrou-na-rede': ['criou a conta na rede pelo convite da live', 'na rede'] }
+        const [texto, valor] = textos[p.evento] || [p.evento, '']
+        const item = { tipo: p.evento, nome: p.nome, texto, valor, at: Date.now(), channelId: p.channelId }
+        chegou(msgEl(item, true), true)
+        atualizar()
+        return
+      }
+      if (p.kind !== 'event') return
+      const ev = p.event || {}
+      if (p.listener === 'message') {
+        const d = ev.data
+        if (chatFeed.querySelector(`[data-id="${d.msgId}"]`)) return
+        chatFeed.querySelector('p.hint')?.remove()
+        const cargos = []
+        if (d.author?.isChatOwner) cargos.push('dono')
+        if (d.author?.isChatModerator) cargos.push('moderador')
+        if (d.author?.isChatSponsor) cargos.push('membro')
+        chegou(msgEl({ id: d.msgId, channelId: d.userId, nome: String(d.displayName || '').replace(/^@/, ''), avatar: d.avatar, texto: d.text, cargos, at: Date.now() }))
+      } else if (p.kind === 'crm') {
+        return
+      } else if (p.listener === 'superchat-latest' || p.listener === 'sponsor-latest') {
+        const item = p.listener === 'superchat-latest'
+          ? { tipo: 'superchat', nome: ev.name, avatar: ev.avatar, texto: ev.message, valor: ev.displayString || `${ev.currency || ''} ${ev.amount || ''}`, at: Date.now() }
+          : ev.gifted
+            ? { tipo: 'giftmembership', nome: ev.sender || ev.name, avatar: ev.avatar, texto: ev.message, valor: `${ev.amount || 1} presente(s)`, at: Date.now() }
+            : { tipo: 'membership', nome: ev.name, avatar: ev.avatar, texto: ev.message, valor: ev.header || `${ev.amount || 1} mês(es)`, at: Date.now() }
+        chatFeed.querySelector('p.hint')?.remove()
+        chegou(msgEl(item, true), true)
+        fixar(item)
+      }
+    } catch (e) {}
+  }
+}
+
+const NOME_EVENTO = { superchat: 'Super Chat', membership: 'Novo membro', giftmembership: 'Presente de membro', consentiu: 'CRM', pendente: 'CRM', 'entrou-na-rede': 'CRM' }
+function msgEl(m, ev) {
+  const tags = (m.cargos || []).map(c => el('span', { class: 'tag ' + c }, c))
+  if (m.superchat) tags.push(el('span', { class: 'tag sc' }, m.superchat))
+  if (ev) tags.push(el('span', { class: 'tag sc' }, `${NOME_EVENTO[m.tipo] || m.tipo}${m.valor ? ' · ' + m.valor : ''}`))
+  return el('div', { class: 'msg' + (ev ? ' ev' : ''), 'data-id': m.id || '' }, [
+    m.avatar ? el('img', { src: m.avatar, alt: '' }) : el('span', { class: 'ph' }),
+    el('div', { style: 'flex:1;min-width:0' }, [
+      el('div', { class: 'who' }, [el('span', { class: m.channelId ? 'clicavel' : '', onclick: () => abrirFicha(m.channelId) }, m.nome || ''), ...tags, el('span', { class: 't' }, hora(m.at))]),
+      el('div', { class: 'body' }, m.texto || ''),
+    ]),
+  ])
+}
+
+/* chat rápido: onde mostrar + tema dos balões, direto na config da ilha */
+async function renderChatRapido(card) {
+  const [fields, cfg] = await Promise.all([api('/api/widget/island/fields'), api('/api/widget/island/config')])
+  const values = { ...cfg.defaults, ...cfg.values }
+  const ok = el('span', { class: 'saved' }, 'aplicado')
+  const salvar = async () => { await api('/api/widget/island/config', 'POST', values); saved(ok) }
+  const sel = key => {
+    const s = el('select', { onchange: e => { values[key] = e.target.value; salvar() } })
+    for (const [v, t] of Object.entries(fields[key]?.options || {})) s.appendChild(el('option', { value: v, selected: String(values[key]) === v ? '' : undefined }, t))
+    return s
+  }
+  const alca = card.querySelector('.alca') // a alça de arrastar veio do layout; não pode sumir
+  card.innerHTML = ''
+  card.append(
+    el('div', { class: 'head' }, [alca, el('h2', {}, 'Chat rápido'), ok]),
+    el('div', { class: 'field' }, [el('label', {}, 'Onde mostrar'), sel('chatMode')]),
+    el('div', { class: 'field' }, [el('label', {}, 'Tema dos balões'), sel('chatBubbleTheme')]),
+    el('div', { class: 'field' }, [el('label', {}, 'Canto dos balões'), sel('chatCorner')]),
+  )
+}
+
+/* ============================================================
+   CONFIGURAÇÕES
+   ============================================================ */
+
+async function renderConfig(main, rest) {
+  main.className = 'config'
+  const side = el('aside', { class: 'side' })
+  const content = el('div', { class: 'content' })
+  main.append(side, content)
+
+  const cenas = await api('/api/cenas')
+  const atual = rest.join('/') || 'servidor'
+  const item = (id, label, extra) => el('button', { class: atual === id ? 'active' : '', onclick: () => { location.hash = 'config/' + id } }, [label, extra])
+
+  side.append(
+    el('div', { class: 'grp' }, 'Live'),
+    item('servidor', 'Servidor e live'),
+    item('contas', 'Contas'),
+    item('crm-textos', 'CRM: respostas automáticas'),
+    item('crm-pontos', 'CRM: pontos e retenção'),
+    el('div', { class: 'grp' }, 'Módulos'),
+    item('sons', 'Botões de som'),
+    item('comandos', 'Comandos do chat'),
+    el('div', { class: 'grp' }, 'Cenas'),
+    item('cenas', 'Todas as cenas'),
+    ...cenas.lista.map(c => item('cena/' + c.id, c.nome, c.id === cenas.ativa ? el('span', { class: 'pill' }, 'no ar') : null)),
+    el('div', { class: 'grp' }, 'Widgets'),
+    ...widgets.map(w => item(w.id, w.name)),
+  )
+
+  if (atual === 'servidor') return renderServer(content)
+  if (atual.startsWith('contas')) return renderContas(content)
+  if (atual === 'crm-textos') return renderCrmTextos(content)
+  if (atual === 'crm-pontos') return renderCrmPontosConfig(content)
+  if (atual === 'sons') return renderSons(content)
+  if (atual === 'comandos') return renderComandos(content)
+  if (atual === 'cenas') return renderCenas(content, cenas)
+  if (atual.startsWith('cena/')) return renderCena(content, cenas, atual.slice(5))
+  if (widgets.some(w => w.id === atual)) return renderWidget(content, atual)
+  content.appendChild(el('p', { class: 'hint' }, 'Escolha um item ao lado.'))
+}
+
+/* ---------- servidor e live ---------- */
+
+async function renderServer(content) {
+  const cfg = await api('/api/server-config')
+  const left = el('div')
+  const right = el('div')
+
+  const target = el('input', { type: 'text', value: cfg.target || '', placeholder: '@seucanal, URL do canal ou URL da live' })
+  const twitchIn = el('input', { type: 'text', value: cfg.twitch || '', placeholder: 'nome do canal na Twitch (ex.: seucanal)' })
+  const kickIn = el('input', { type: 'text', value: cfg.kick || '', placeholder: 'nome do canal no Kick (ex.: seucanal)' })
+  const saveMsg = el('span', { class: 'saved' }, 'salvo')
+  const salvarTudo = async () => { await api('/api/server-config', 'POST', { target: target.value, twitch: twitchIn.value, kick: kickIn.value }); saved(saveMsg); pollStatus() }
+  const saveBtn = el('button', { class: 'btn primary', onclick: salvarTudo }, 'Conectar')
+  const statusError = el('p', { class: 'hint' })
+  const statusPlataformas = el('div', { class: 'hint', style: 'display:flex;flex-direction:column;gap:4px;margin-top:8px' })
+
+  left.appendChild(el('div', { class: 'card' }, [
+    el('h2', {}, 'Live do YouTube'),
+    el('p', { class: 'hint' }, 'Informe o @ do canal. Quando a live estiver no ar, o servidor encontra o chat sozinho, reconecta se cair e troca de live se o canal trocar.'),
+    el('div', { class: 'row' }, [target]),
+    statusError,
+  ]))
+
+  left.appendChild(el('div', { class: 'card', style: 'margin-top:16px' }, [
+    el('h2', {}, 'Twitch e Kick (sem login)'),
+    el('p', { class: 'hint' }, 'O chat das duas plataformas entra nos mesmos overlays, com cargos e emotes. Na Twitch também chegam subs, presentes, bits e raids. Deixe vazio o que não usar.'),
+    el('div', { class: 'row' }, [el('label', { class: 'hint', style: 'min-width:60px' }, 'Twitch'), twitchIn]),
+    el('div', { class: 'row', style: 'margin-top:8px' }, [el('label', { class: 'hint', style: 'min-width:60px' }, 'Kick'), kickIn]),
+    statusPlataformas,
+    el('div', { class: 'row', style: 'margin-top:10px' }, [saveBtn, saveMsg]),
+  ]))
+
+  const base = location.origin
+  const key = cfg.overlayKey ? `?key=${encodeURIComponent(cfg.overlayKey)}` : ''
+  left.appendChild(el('div', { class: 'card urls', style: 'margin-top:16px' }, [
+    el('h2', {}, 'Fonte de navegador para o OBS (1920 x 1080)'),
+    el('div', { class: 'hint' }, 'Cena completa — tudo em uma só fonte; se recarrega sozinha quando o servidor reinicia.'),
+    el('code', {}, base + '/overlay/cena' + key),
+    el('p', { class: 'hint' }, 'Deixe "Controlar áudio via OBS" desmarcado para o som sair direto no Windows.'),
+  ]))
+
+  const recent = el('div', { class: 'recent' }, 'carregando…')
+  right.appendChild(el('div', { class: 'card' }, [el('h2', {}, 'Últimas mensagens recebidas'), recent]))
+  const fill = s => {
+    recent.innerHTML = ''
+    for (const r of s.recent || []) recent.appendChild(el('div', { html: `<b>${escapeHtml(r.name)}</b> <i>(${r.plataforma ? r.plataforma + ' · ' : ''}${r.type})</i> ${escapeHtml(r.text || '')}` }))
+    if (!s.recent || !s.recent.length) recent.textContent = 'Nenhuma mensagem recebida ainda.'
+    statusError.textContent = s.status?.error ? `Último erro: ${s.status.error}` : ''
+    statusPlataformas.innerHTML = ''
+    for (const [nome, st] of Object.entries(s.plataformas || {})) {
+      if (!st || st.state === 'parado') continue
+      const ok = st.state === 'conectado'
+      const rotulos = { twitch: 'Twitch (chat)', kick: 'Kick', 'twitch-eventos': 'Twitch (eventos da conta)', livepix: 'LivePix', pixgg: 'PixGG' }
+      const detalhe = st.messages != null ? `${st.messages || 0} msgs` : st.doacoes != null ? `${st.doacoes || 0} doações` : st.eventos != null ? `${st.eventos || 0} eventos` : ''
+      statusPlataformas.appendChild(el('div', {}, `${rotulos[nome] || nome}${st.channel ? ` (${st.channel})` : ''}: ${st.state}${ok && detalhe ? ` · ${detalhe}` : ''}${st.error ? ` · ${st.error}` : ''}`))
+    }
+  }
+  onStatus(e => fill(e.detail))
+  if (status.recent) fill(status)
+
+  content.append(left, right)
+}
+
+/* ---------- contas (Google) ---------- */
+
+async function renderContas(content) {
+  content.className = 'content single'
+  const st = await api('/api/google/status')
+  const erroUrl = new URLSearchParams((location.hash.split('?')[1] || '')).get('erro')
+  const card = el('div', { class: 'card', style: 'max-width:720px' })
+  card.appendChild(el('h2', {}, 'Conta Google do canal'))
+  if (erroUrl) card.appendChild(el('p', { class: 'hint', style: 'color:var(--danger)' }, `O login não terminou: ${erroUrl}`))
+  if (!st.configurado) {
+    card.appendChild(el('p', { class: 'hint' }, 'O servidor ainda não tem GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET no .env. Depois de gravar e reiniciar, o botão de entrar aparece aqui.'))
+  } else if (!st.conectado) {
+    card.appendChild(el('p', { class: 'hint' }, 'Entre com a conta Google dona do canal. O Live Manager pede leitura do YouTube (espectadores, inscritos) e escrita no chat (mandar mensagem como você). Só essa conta faz login aqui.'))
+    card.appendChild(el('a', { class: 'btn primary', href: '/api/google/login', style: 'display:inline-block;text-decoration:none;margin-top:6px' }, 'Entrar com Google'))
+  } else {
+    const c = st.canal || {}
+    const conta = st.conta || {}
+    card.appendChild(el('div', { class: 'membro', style: 'border:0;padding:4px 0 10px' }, [
+      c.foto || conta.foto ? el('img', { src: c.foto || conta.foto, alt: '', style: 'width:44px;height:44px' }) : el('span', { class: 'ph' }),
+      el('div', { style: 'flex:1' }, [
+        el('div', { style: 'font-weight:700;font-size:15px' }, c.titulo || conta.nome || 'conta conectada'),
+        el('div', { class: 'hint' }, [c.handle ? c.handle + ' · ' : '', conta.email || '', c.inscritos != null ? ` · ${c.inscritos} inscritos` : ''].join('')),
+      ]),
+    ]))
+    if (st.erro) card.appendChild(el('p', { class: 'hint', style: 'color:var(--danger)' }, `Acesso com problema: ${st.erro}. Entre de novo.`))
+    card.appendChild(el('p', { class: 'hint' }, `Permissões: ${st.escopos.includes('youtube.force-ssl') ? 'ler e escrever no YouTube' : 'só leitura no YouTube'}. Cota usada hoje (aprox.): ${st.cotaHoje} de 10.000 unidades — cada mensagem enviada no chat custa 50.`))
+    card.appendChild(el('div', { class: 'row', style: 'margin-top:8px' }, [
+      el('a', { class: 'btn small', href: '/api/google/login', style: 'text-decoration:none' }, 'Entrar de novo'),
+      el('button', { class: 'btn small danger', onclick: async () => { if (!confirm('Desconectar a conta Google? O envio de mensagens, espectadores e inscritos param.')) return; await api('/api/google/logout', 'POST', {}); route() } }, 'Desconectar'),
+    ]))
+  }
+  content.appendChild(card)
+  content.appendChild(await cardTwitch())
+  content.appendChild(await cardLivePix())
+  content.appendChild(await cardPixGG())
+}
+
+async function cardTwitch() {
+  const st = await api('/api/twitch/status')
+  const card = el('div', { class: 'card', style: 'max-width:720px;margin-top:16px' })
+  card.appendChild(el('h2', {}, 'Conta Twitch'))
+  if (!st.configurado) {
+    card.appendChild(el('p', { class: 'hint' }, 'O servidor ainda não tem TWITCH_CLIENT_ID e TWITCH_CLIENT_SECRET no .env. Registre um aplicativo em dev.twitch.tv (URL de retorno: ' + location.origin + '/api/twitch/callback), grave as duas variáveis, reinicie e o botão de entrar aparece aqui. O chat da Twitch não depende disso: basta o nome do canal na aba Servidor e live.'))
+  } else if (!st.conectado) {
+    card.appendChild(el('p', { class: 'hint' }, 'Entre com a conta dona do canal. Isso liga os alertas de seguidor, sub, presentes, bits, raid e resgate de pontos em tempo real, direto da Twitch.'))
+    card.appendChild(el('a', { class: 'btn primary', href: '/api/twitch/login', style: 'display:inline-block;text-decoration:none;margin-top:6px' }, 'Entrar com Twitch'))
+  } else {
+    const c = st.conta || {}
+    const es = st.eventsub || {}
+    card.appendChild(el('div', { class: 'membro', style: 'border:0;padding:4px 0 10px' }, [
+      c.foto ? el('img', { src: c.foto, alt: '', style: 'width:44px;height:44px;border-radius:50%' }) : el('span', { class: 'ph' }),
+      el('div', {}, [el('b', {}, c.nome || c.login || ''), el('div', { class: 'hint' }, c.login ? '@' + c.login : '')]),
+    ]))
+    if (st.erro) card.appendChild(el('p', { class: 'hint', style: 'color:var(--danger)' }, `Acesso com problema: ${st.erro}. Entre de novo.`))
+    card.appendChild(el('p', { class: 'hint' }, `Eventos em tempo real: ${es.state || '…'}${es.inscricoes ? ` · ${es.inscricoes} de 7 tipos ativos` : ''}${es.eventos ? ` · ${es.eventos} recebidos` : ''}${es.error ? ` · ${es.error}` : ''}`))
+    card.appendChild(el('div', { class: 'row', style: 'margin-top:8px' }, [
+      el('a', { class: 'btn small', href: '/api/twitch/login', style: 'text-decoration:none' }, 'Entrar de novo'),
+      el('button', { class: 'btn small danger', onclick: async () => { if (!confirm('Desconectar a conta Twitch? Os alertas de seguidor e resgates param; subs, bits e raids continuam pelo chat.')) return; await api('/api/twitch/logout', 'POST', {}); route() } }, 'Desconectar'),
+    ]))
+  }
+  return card
+}
+
+function cardCredenciais({ titulo, intro, st, rotaConfig, rotaLogout, extra }) {
+  const card = el('div', { class: 'card', style: 'max-width:720px;margin-top:16px' })
+  card.appendChild(el('h2', {}, titulo))
+  card.appendChild(el('p', { class: 'hint' }, intro))
+  const idIn = el('input', { type: 'text', value: st.clientId || '', placeholder: 'client id', autocomplete: 'off' })
+  const secIn = el('input', { type: 'password', value: '', placeholder: st.configurado ? 'client secret (deixe vazio para manter o atual)' : 'client secret', autocomplete: 'new-password' })
+  const msg = el('p', { class: 'hint' })
+  const salvar = el('button', { class: 'btn primary', onclick: async () => {
+    salvar.disabled = true
+    const r = await api(rotaConfig, 'POST', { clientId: idIn.value, clientSecret: secIn.value })
+    salvar.disabled = false
+    if (r.error) { msg.textContent = r.error; return }
+    msg.textContent = r.webhook ? (String(r.webhook).startsWith('erro') ? `Credenciais salvas. Webhook: ${r.webhook}` : `Credenciais salvas. Webhook registrado: ${r.webhook}`) : 'Credenciais salvas.'
+    setTimeout(route, 1200)
+  } }, st.configurado ? 'Salvar e reconectar' : 'Salvar e conectar')
+  card.appendChild(el('div', { class: 'field', style: 'grid-template-columns:120px 1fr' }, [el('label', {}, 'Client ID'), idIn]))
+  card.appendChild(el('div', { class: 'field', style: 'grid-template-columns:120px 1fr' }, [el('label', {}, 'Client Secret'), secIn]))
+  if (extra) card.appendChild(extra)
+  const linha = [salvar]
+  if (st.configurado) linha.push(el('button', { class: 'btn small danger', onclick: async () => { if (!confirm(`Remover as credenciais de ${titulo}?`)) return; await api(rotaLogout, 'POST', {}); route() } }, 'Remover'))
+  card.appendChild(el('div', { class: 'row', style: 'margin-top:8px' }, linha))
+  card.appendChild(msg)
+  return card
+}
+
+async function cardLivePix() {
+  const st = await api('/api/livepix/status')
+  const estado = st.configurado ? el('p', { class: 'hint' }, `Estado: ${st.state}${st.conta ? ` · conta @${st.conta.username}` : ''}${st.doacoes ? ` · ${st.doacoes} doações nesta sessão` : ''}${st.webhook ? ' · webhook ativo' : ' · lendo a cada 15 s'}${st.error ? ` · ${st.error}` : ''}`) : null
+  return cardCredenciais({
+    titulo: 'LivePix',
+    intro: 'No site da LivePix, em Configurações → Aplicativos, crie um aplicativo e copie o client id e o client secret. As doações entram como alerta de doação nos overlays. O servidor consulta a LivePix a cada 15 segundos; no servidor público ele também registra um webhook para avisar na hora.',
+    st, rotaConfig: '/api/livepix/config', rotaLogout: '/api/livepix/logout', extra: estado,
+  })
+}
+
+async function cardPixGG() {
+  const st = await api('/api/pixgg/status')
+  const info = el('div', {}, [
+    el('p', { class: 'hint' }, `A PixGG só avisa por webhook, então isto só funciona no servidor público, não no PC. URL do webhook: `),
+    el('code', { style: 'display:block;background:var(--panel2);padding:8px 10px;border-radius:8px;font-size:13px;user-select:all' }, st.webhookEsperado || ''),
+    el('p', { class: 'hint' }, st.local ? 'Você está no servidor local: salve as credenciais aqui só para testar; o registro do webhook acontece no servidor público.' : (st.webhookUrl ? `Registrado na PixGG: ${st.webhookUrl}` : 'Ao salvar, o servidor tenta registrar essa URL na PixGG. Se a PixGG recusar, cole a URL à mão na aba Aplicações do painel dela.')),
+    st.configurado ? el('p', { class: 'hint' }, `Estado: ${st.state}${st.doacoes ? ` · ${st.doacoes} doações nesta sessão` : ''}${st.error ? ` · ${st.error}` : ''}`) : null,
+  ])
+  return cardCredenciais({
+    titulo: 'PixGG',
+    intro: 'No painel da PixGG, em Aplicações, crie uma aplicação com o escopo webhook e copie o client id e o client secret (o secret aparece uma vez só).',
+    st, rotaConfig: '/api/pixgg/config', rotaLogout: '/api/pixgg/logout', extra: info,
+  })
+}
+
+/* ---------- viewers (CRM) ---------- */
+
+async function renderCrmTextos(content) {
+  content.className = 'content single'
+  const txOk = el('span', { class: 'saved' }, 'salvo')
+  // textos que a conta do canal manda no chat
+  const tx = await api('/api/crm/textos')
+  const campo = (k, rotulo) => { const i = el('input', { type: 'text', value: tx.textos[k] || '' }); i.dataset.k = k; return el('div', { class: 'field', style: 'grid-template-columns:160px 1fr' }, [el('label', {}, rotulo), i]) }
+  const textosCard = el('div', { class: 'card', style: 'margin-bottom:16px' }, [
+    el('h2', {}, 'Respostas automáticas no chat (pela sua conta)'),
+    el('p', { class: 'hint' }, 'Use {nome} onde a pessoa deve ser mencionada. Cada resposta custa 50 unidades da cota diária do YouTube.'),
+    campo('pedido', 'Alguém manda um e-mail'), campo('confirmacao', 'A pessoa diz SIM'), campo('saida', 'A pessoa diz !sair'),
+    el('div', { class: 'row', style: 'margin-top:8px' }, [
+      el('button', { class: 'btn small primary', onclick: async () => { const b = {}; for (const i of textosCard.querySelectorAll('input')) b[i.dataset.k] = i.value; await api('/api/crm/textos', 'POST', b); saved(txOk) } }, 'Salvar textos'),
+      el('button', { class: 'btn small ghost', onclick: () => { for (const i of textosCard.querySelectorAll('input')) i.value = tx.padrao[i.dataset.k] } }, 'voltar ao padrão'),
+      txOk,
+    ]),
+  ])
+  content.appendChild(textosCard)
+}
+
+async function renderCrmPontosConfig(content) {
+  content.className = 'content single'
+  const d = await api('/api/crm/pontos')
+  const ok = el('span', { class: 'saved' }, 'salvo')
+  const ROTULOS = {
+    mensagem: 'Mensagem no chat', cooldownMensagemSeg: 'Intervalo mínimo entre mensagens que pontuam (segundos)', primeiraDoDia: 'Primeira mensagem do dia',
+    superchat: 'Super Chat (fixo)', superchatPorReal: 'Super Chat: pontos por real', membro: 'Virou membro', presente: 'Cada membro presenteado',
+    inscreveu: 'Se inscreveu no canal', entrouNaRede: 'Criou conta na rede pelo convite', retencaoDias: 'Retenção: dias até apagar e-mail de quem não criou conta',
+  }
+  const campos = Object.keys(ROTULOS).map(k => { const i = el('input', { type: 'number', value: d.valores[k], min: 0, step: 1 }); i.dataset.k = k; return el('div', { class: 'field', style: 'grid-template-columns:1fr 120px' }, [el('label', {}, ROTULOS[k]), i]) })
+  const card = el('div', { class: 'card', style: 'max-width:720px' }, [
+    el('h2', {}, 'Pontos e retenção'),
+    el('p', { class: 'hint' }, 'Quanto vale cada coisa. Zero desliga aquele item. Mudança vale daqui pra frente; o que já foi somado fica.'),
+    ...campos,
+    el('div', { class: 'row', style: 'margin-top:10px' }, [
+      el('button', { class: 'btn small primary', onclick: async () => { const b = {}; for (const i of card.querySelectorAll('input')) b[i.dataset.k] = i.value; await api('/api/crm/pontos', 'POST', b); saved(ok) } }, 'Salvar'),
+      el('button', { class: 'btn small ghost', onclick: () => { for (const i of card.querySelectorAll('input')) i.value = d.padrao[i.dataset.k] } }, 'voltar ao padrão'),
+      ok,
+    ]),
+  ])
+  content.appendChild(card)
+}
+
+/* ---------- sons: lista editável ---------- */
+
+async function renderSons(content) {
+  content.className = 'content single'
+  const d = await api('/api/sons')
+  let sons = d.sons
+  const ok = el('span', { class: 'saved' }, 'salvo')
+  const lista = el('div', { class: 'membros' })
+  const salvar = async () => { const r = await api('/api/sons', 'POST', { sons }); sons = r.sons; saved(ok); desenhar() }
+  const desenhar = () => {
+    lista.innerHTML = ''
+    if (!sons.length) lista.appendChild(el('p', { class: 'hint' }, 'Nenhum som. Suba um arquivo abaixo.'))
+    sons.forEach((som, i) => {
+      const nome = el('input', { type: 'text', value: som.nome, style: 'max-width:200px', onchange: e => { som.nome = e.target.value; salvar() } })
+      const vol = el('input', { type: 'number', value: som.volume, min: 0, max: 100, step: 5, style: 'width:80px', title: 'volume %', onchange: e => { som.volume = Number(e.target.value); salvar() } })
+      const cor = el('input', { type: 'color', value: /^#[0-9a-f]{6}$/i.test(som.cor || '') ? som.cor : '#5865f2', title: 'cor do botão', oninput: e => { som.cor = e.target.value; salvar() } })
+      lista.appendChild(el('div', { class: 'membro', style: 'gap:8px' }, [
+        nome, vol, el('span', { class: 'hint' }, '%'), cor,
+        el('button', { class: 'btn small', onclick: () => new Audio(som.url).play() }, '▶'),
+        el('button', { class: 'btn small', title: 'tocar nos overlays', onclick: () => api('/api/som', 'POST', { id: som.id }) }, 'no ar'),
+        el('button', { class: 'btn small danger', onclick: () => { sons.splice(i, 1); salvar() } }, 'remover'),
+      ]))
+    })
+  }
+  const arquivo = el('input', { type: 'file', accept: 'audio/*', multiple: '' })
+  arquivo.addEventListener('change', async e => {
+    for (const f of e.target.files) {
+      const r = await fetch(`/api/upload?name=${encodeURIComponent(f.name)}`, { method: 'POST', body: f })
+      const { url } = await r.json()
+      sons.push({ nome: f.name.replace(/\.[^.]+$/, '').slice(0, 40), url, volume: 100 })
+    }
+    arquivo.value = ''
+    salvar()
+  })
+  desenhar()
+  content.append(el('div', { class: 'card', style: 'max-width:820px' }, [
+    el('div', { class: 'head' }, [el('h2', {}, 'Botões de som'), ok]),
+    el('p', { class: 'hint' }, 'Cada arquivo vira um botão no Stream Manager. Toca nos overlays abertos (o OBS), com o volume do botão vezes o volume geral do widget "Botões de som". MP3, OGG, WAV ou M4A.'),
+    lista,
+    el('div', { class: 'row', style: 'margin-top:12px' }, [el('span', { class: 'hint' }, 'adicionar:'), arquivo]),
+  ]))
+}
+
+/* ---------- comandos do chat ---------- */
+
+async function renderComandos(content) {
+  content.className = 'content single'
+  const d = await api('/api/comandos')
+  let comandos = d.comandos
+  const ok = el('span', { class: 'saved' }, 'salvo')
+  const lista = el('div', { class: 'membros' })
+  const salvar = async () => { const r = await api('/api/comandos', 'POST', { comandos }); comandos = r.comandos; saved(ok); desenhar() }
+  const desenhar = () => {
+    lista.innerHTML = ''
+    if (!comandos.length) lista.appendChild(el('p', { class: 'hint' }, 'Nenhum comando. Exemplos: !discord, !redes, !pc, !musica.'))
+    comandos.forEach((c, i) => {
+      lista.appendChild(el('div', { class: 'membro', style: 'gap:8px;align-items:flex-start' }, [
+        el('input', { type: 'text', value: c.gatilho, style: 'max-width:140px', onchange: e => { c.gatilho = e.target.value; salvar() } }),
+        el('input', { type: 'text', value: c.resposta, placeholder: 'resposta ({nome} menciona quem chamou)', onchange: e => { c.resposta = e.target.value; salvar() } }),
+        el('input', { type: 'number', value: c.cooldownSeg, min: 5, step: 5, style: 'width:80px', title: 'intervalo mínimo (s)', onchange: e => { c.cooldownSeg = Number(e.target.value); salvar() } }),
+        el('label', { class: 'hint', style: 'white-space:nowrap' }, [el('input', { type: 'checkbox', checked: c.ativo !== false ? '' : undefined, onchange: e => { c.ativo = e.target.checked; salvar() } }), ' ativo']),
+        el('button', { class: 'btn small danger', onclick: () => { comandos.splice(i, 1); salvar() } }, 'remover'),
+      ]))
+    })
+  }
+  desenhar()
+  content.append(el('div', { class: 'card', style: 'max-width:900px' }, [
+    el('div', { class: 'head' }, [el('h2', {}, 'Comandos do chat'), ok]),
+    el('p', { class: 'hint' }, 'Alguém digita o gatilho no chat e a sua conta responde. Cada resposta custa 50 unidades da cota do YouTube; o intervalo mínimo evita flood. "!sair" e "!sim" são do sistema.'),
+    lista,
+    el('div', { class: 'row', style: 'margin-top:12px' }, [el('button', { class: 'btn small primary', onclick: () => { comandos.push({ gatilho: '!novo', resposta: '', cooldownSeg: 30, ativo: true }); desenhar() } }, '+ comando')]),
+  ]))
+}
+
+/* ============================================================
+   CRM — área própria (#crm/<secao>). Seções novas entram em SECOES_CRM.
+   ============================================================ */
+
+const SECOES_CRM = [
+  { id: 'viewers', nome: 'Viewers', render: renderCrmViewers },
+  { id: 'pendentes', nome: 'Esperando SIM', render: c => renderCrmViewers(c, 'pendentes') },
+  { id: 'confirmados', nome: 'Com e-mail', render: c => renderCrmViewers(c, 'confirmados') },
+  { id: 'rede', nome: 'Na rede', render: c => renderCrmViewers(c, 'rede') },
+  { id: 'catraca', nome: 'Catraca', render: renderCrmCatraca },
+  { id: 'convites', nome: 'Convites', breve: 'envio do convite e vínculo com a rede (fase 3)' },
+  { id: 'pontos', nome: 'Pontos', render: renderCrmPontos },
+  { id: 'segmentos', nome: 'Segmentos', breve: 'grupos salvos por filtro' },
+]
+
+async function renderCrm(main, rest) {
+  main.className = 'config'
+  const side = el('aside', { class: 'side' })
+  const content = el('div', { class: 'content single' })
+  main.append(side, content)
+  const atual = rest[0] || 'viewers'
+  side.appendChild(el('div', { class: 'grp' }, 'CRM'))
+  for (const sec of SECOES_CRM) side.appendChild(el('button', { class: atual === sec.id ? 'active' : '', onclick: () => { location.hash = 'crm/' + sec.id } }, [sec.nome, sec.breve ? el('span', { class: 'hint', style: 'margin-left:auto;font-size:10px' }, 'em breve') : null]))
+  side.appendChild(el('div', { class: 'grp' }, 'Ajustes'))
+  side.appendChild(el('button', { onclick: () => { location.hash = 'config/crm-textos' } }, 'Respostas automáticas ↗'))
+  const sec = SECOES_CRM.find(x => x.id === atual) || SECOES_CRM[0]
+  if (sec.render) return sec.render(content)
+  content.appendChild(el('div', { class: 'card', style: 'max-width:640px' }, [el('h2', {}, sec.nome), el('p', { class: 'hint' }, `Em breve: ${sec.breve}.`)]))
+}
+
+/* catraca: quem disse SIM e espera o Filipe olhar e decidir */
+async function renderCrmCatraca(content) {
+  const d = await api('/api/crm/viewers?filtro=catraca&limite=200')
+  const t = d.totais || {}
+  const lista = el('div', { class: 'viewers-lista' })
+  const fmt = ts => ts ? new Date(ts).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'
+  if (!d.lista.length) lista.appendChild(el('p', { class: 'hint' }, 'Ninguém esperando. Quem disser SIM no chat aparece aqui.'))
+  for (const v of d.lista) {
+    lista.appendChild(el('div', { class: 'membro', style: 'align-items:flex-start;padding:10px 4px' }, [
+      v.avatar ? el('img', { src: v.avatar, alt: '', style: 'width:40px;height:40px' }) : el('span', { class: 'ph' }),
+      el('div', { style: 'flex:1;min-width:0' }, [
+        el('div', { class: 'clicavel', style: 'font-weight:700', onclick: () => abrirFicha(v.channelId) }, v.nome),
+        el('div', { class: 'hint' }, `${v.email} · SIM em ${fmt(v.consentimentoEm)} · ${v.mensagens} msg em ${v.lives} live${v.lives > 1 ? 's' : ''} · ${(v.cargos || []).join(', ') || 'viewer'}`),
+      ]),
+      el('button', { class: 'btn small', onclick: () => abrirFicha(v.channelId) }, 'ver ficha'),
+      el('button', { class: 'btn small primary', onclick: async () => { const r = await api(`/api/crm/viewer/${encodeURIComponent(v.channelId)}/aprovar`, 'POST', {}); const e = r.envio || {}; alert(e.ok ? (e.avisou ? `Convite enviado pra ${v.email}.` : `Convite gerado, mas o e-mail não saiu: ${e.porqueNaoAvisou}. O link está no histórico da ficha.`) : `Aprovado, mas o convite não saiu: ${e.erro}`); route() } }, 'Aprovar e convidar'),
+      el('button', { class: 'btn small danger', onclick: async () => { const motivo = prompt(`Recusar ${v.nome}? O e-mail é apagado; a ficha fica. Motivo (opcional, só pra você):`); if (motivo === null) return; await api(`/api/crm/viewer/${encodeURIComponent(v.channelId)}/recusar`, 'POST', { motivo }); route() } }, 'Recusar'),
+    ]))
+  }
+  content.append(el('div', { class: 'card' }, [
+    el('div', { class: 'head' }, [el('h2', {}, 'Catraca'), el('span', { class: 'hint' }, `${t.naCatraca || 0} esperando · ${t.aguardandoEnvio || 0} aprovados aguardando envio do convite`)]),
+    el('p', { class: 'hint' }, 'Disseram SIM no chat. Confere se é gente de verdade (ficha, histórico, e-mail) e decide. "Aprovar e convidar" gera o convite na rede e manda o e-mail na hora; recusar apaga o e-mail e mantém só a ficha pública. Quem entra pelo convite da live entra direto na rede, sem outra fila lá.'),
+    lista,
+  ]))
+}
+
+/* pontos: ranking; os valores se ajustam em Configurações → CRM */
+async function renderCrmPontos(content) {
+  const d = await api('/api/crm/pontos')
+  const v = d.valores
+  const lista = el('div', { class: 'viewers-lista' })
+  if (!d.ranking.length) lista.appendChild(el('p', { class: 'hint' }, 'Ninguém pontuou ainda. Pontos entram a cada mensagem (com intervalo), Super Chat, membro, presente, inscrição e entrada na rede.'))
+  d.ranking.forEach((r, i) => lista.appendChild(el('div', { class: 'membro clicavel', onclick: () => abrirFicha(r.channelId) }, [
+    el('b', { style: 'min-width:26px;text-align:right' }, `${i + 1}º`),
+    r.avatar ? el('img', { src: r.avatar, alt: '' }) : el('span', { class: 'ph' }),
+    el('span', { class: 'n' }, r.nome), ...(r.cargos || []).map(c => el('span', { class: 'tag ' + c }, c)), r.redeUserId ? el('span', { class: 'pill' }, 'rede') : null,
+    el('b', { style: 'color:var(--accent2)' }, `${r.pontos} pts`),
+  ])))
+  content.append(el('div', { class: 'card' }, [
+    el('div', { class: 'head' }, [el('h2', {}, 'Ranking'), el('button', { class: 'btn small ghost', onclick: () => { location.hash = 'config/crm-pontos' } }, 'ajustar valores ↗')]),
+    el('p', { class: 'hint' }, `Hoje vale: mensagem ${v.mensagem} (a cada ${v.cooldownMensagemSeg}s) · primeira do dia ${v.primeiraDoDia} · Super Chat ${v.superchat} + ${v.superchatPorReal}/R$ · membro ${v.membro} · presente ${v.presente} cada · inscreveu ${v.inscreveu} · entrou na rede ${v.entrouNaRede}. Recompensas na rede (moldura, selo) vêm na fase 4.`),
+    lista,
+  ]))
+}
+
+async function renderCrmViewers(content, filtroInicial = '') {
+  const q = el('input', { type: 'text', placeholder: 'buscar por nome, e-mail…', style: 'max-width:320px' })
+  const filtro = el('select', { style: 'max-width:220px' }, [
+    el('option', { value: '' }, 'todos'), el('option', { value: 'com-notas' }, 'com notas minhas'), el('option', { value: 'confirmados' }, 'com e-mail (SIM)'),
+    el('option', { value: 'pendentes' }, 'esperando SIM'), el('option', { value: 'catraca' }, 'na catraca'), el('option', { value: 'aprovados' }, 'aprovados'), el('option', { value: 'recusados' }, 'recusados'), el('option', { value: 'convidados' }, 'convidados'), el('option', { value: 'rede' }, 'na rede'),
+  ])
+  filtro.value = filtroInicial
+  const totais = el('div', { class: 'hint' })
+  const lista = el('div', { class: 'viewers-lista' })
+  content.append(el('div', { class: 'card' }, [
+    el('div', { class: 'head' }, [el('h2', {}, 'Viewers'), totais]),
+    el('p', { class: 'hint' }, 'Todo mundo que já falou no chat. Sozinho, o sistema só guarda o que é público (conta do YouTube, cargos, quando apareceu, quantas mensagens) e as suas notas. E-mail só entra com o SIM da pessoa no chat, ou digitado por você.'),
+    el('div', { class: 'row', style: 'margin:10px 0 12px' }, [q, filtro]),
+    lista,
+  ]))
+  const carregar = async () => {
+    const d = await api(`/api/crm/viewers?q=${encodeURIComponent(q.value)}&filtro=${filtro.value}&limite=300`)
+    const t = d.totais || {}
+    totais.textContent = `${t.total || 0} viewers · ${t.confirmados || 0} com e-mail · ${t.pendentes || 0} esperando SIM · ${t.naRede || 0} na rede`
+    lista.innerHTML = ''
+    if (!d.lista.length) lista.appendChild(el('p', { class: 'hint' }, 'Ninguém aqui ainda.'))
+    for (const v of d.lista) lista.appendChild(el('div', { class: 'membro', onclick: () => abrirFicha(v.channelId) }, [
+      v.avatar ? el('img', { src: v.avatar, alt: '' }) : el('span', { class: 'ph' }),
+      el('span', { class: 'n' }, v.nome || v.channelId),
+      ...(v.cargos || []).map(c => el('span', { class: 'tag ' + c }, c)),
+      v.qtdNotas ? el('span', { class: 'badge-notas', title: 'notas internas' }, `${v.qtdNotas} nota${v.qtdNotas > 1 ? 's' : ''}`) : null,
+      v.emailStatus === 'confirmado' ? el('span', { class: 'tag sc' }, 'e-mail') : v.emailStatus === 'pendente' ? el('span', { class: 'tag' }, 'SIM?') : null,
+      v.redeUserId ? el('span', { class: 'pill' }, 'rede') : null,
+      el('b', {}, `${v.mensagens} msg · ${v.lives} live${v.lives > 1 ? 's' : ''} · ${hora(v.ultimaVez)}`),
+    ]))
+  }
+  q.addEventListener('input', () => { clearTimeout(q._t); q._t = setTimeout(carregar, 250) })
+  filtro.addEventListener('change', carregar)
+  carregar()
+}
+
+/* ---------- cenas: lista ---------- */
+
+async function renderCenas(content, cenas) {
+  content.className = 'content single'
+  const nome = el('input', { type: 'text', placeholder: 'Nome da nova cena (ex.: Intervalo, Encerrando…)', style: 'max-width:360px' })
+  const copiar = el('select', { style: 'max-width:260px' }, [el('option', { value: '' }, 'começar do padrão'), ...cenas.lista.map(c => el('option', { value: c.id }, 'copiar de: ' + c.nome))])
+  const criar = async () => {
+    if (!nome.value.trim()) return nome.focus()
+    const r = await api('/api/cenas', 'POST', { acao: 'criar', nome: nome.value.trim(), copiarDe: copiar.value || undefined })
+    location.hash = 'config/cena/' + r.id
+  }
+  const lista = el('div', { class: 'membros' })
+  for (const c of cenas.lista) {
+    lista.appendChild(el('div', { class: 'membro' }, [
+      el('span', { class: 'n' }, c.nome), c.id === cenas.ativa ? el('span', { class: 'pill' }, 'no ar') : null,
+      el('span', { class: 'hint' }, `${c.campos.template || 'gradiente'} · ${c.campos.titulo || ''}`),
+      el('button', { class: 'btn small', onclick: () => { location.hash = 'config/cena/' + c.id } }, 'editar'),
+    ]))
+  }
+  content.append(el('div', { class: 'card' }, [
+    el('h2', {}, 'Cenas'),
+    el('p', { class: 'hint' }, 'Cada cena é uma tela de intervalo completa: texto, template animado, cores, fonte, imagem. "Principal" é a cena sem tela e sempre existe. No Stream Manager você troca entre elas com um clique.'),
+    lista,
+    el('div', { class: 'row', style: 'margin-top:14px' }, [nome, copiar, el('button', { class: 'btn primary', onclick: criar }, 'Criar cena')]),
+  ]))
+}
+
+/* ---------- cena: edição (formulário gerado do FIELDS do widget telas) ---------- */
+
+let saveTimer = null
+async function renderCena(content, cenas, id) {
+  const cena = cenas.lista.find(c => c.id === id)
+  if (!cena) { content.appendChild(el('p', { class: 'hint' }, 'Cena não encontrada.')); return }
+  const fields = cenas.campos
+  const values = { ...cenas.padroes, ...cena.campos }
+  const savedMsg = el('span', { class: 'saved' }, 'salvo')
+  let iframe = null
+  const save = () => {
+    clearTimeout(saveTimer)
+    saveTimer = setTimeout(async () => {
+      await api('/api/cenas', 'POST', { acao: 'salvar', id, campos: values })
+      saved(savedMsg)
+      if (iframe) iframe.contentWindow.location.reload() // prévia com o preset salvo
+    }, 500)
+  }
+
+  const left = el('div')
+  const card = el('div', { class: 'card' })
+  const nomeIn = el('input', { type: 'text', value: cena.nome, style: 'max-width:240px', onchange: async e => { await api('/api/cenas', 'POST', { acao: 'renomear', id, nome: e.target.value }); saved(savedMsg) } })
+  card.appendChild(el('div', { class: 'row', style: 'margin-bottom:10px' }, [
+    nomeIn,
+    el('button', { class: 'btn small primary', onclick: async () => { await api('/api/cenas', 'POST', { acao: 'ativar', id }); pollStatus() } }, 'Colocar no ar'),
+    el('button', { class: 'btn small', onclick: async () => { const r = await api('/api/cenas', 'POST', { acao: 'criar', nome: cena.nome + ' (cópia)', copiarDe: id }); location.hash = 'config/cena/' + r.id } }, 'Duplicar'),
+    el('button', { class: 'btn small danger', onclick: async () => { if (!confirm(`Apagar a cena "${cena.nome}"?`)) return; await api('/api/cenas', 'POST', { acao: 'apagar', id }); location.hash = 'config/cenas' } }, 'Apagar'),
+    savedMsg,
+  ]))
+
+  // presets de visual: salvar o desta cena, aplicar um salvo, definir o padrão
+  const presets = cenas.presets || []
+  const selPreset = el('select', { style: 'max-width:240px' }, [el('option', { value: '' }, presets.length ? 'aplicar um preset…' : 'nenhum preset salvo'), ...presets.map(pr => el('option', { value: pr.id }, pr.nome + (pr.id === cenas.presetPadrao ? ' (padrão)' : '')))])
+  selPreset.addEventListener('change', async () => {
+    if (!selPreset.value) return
+    await api('/api/cenas', 'POST', { acao: 'preset-aplicar', id: selPreset.value, cenaId: id })
+    route()
+  })
+  const nomePreset = el('input', { type: 'text', placeholder: 'nome do preset', style: 'max-width:200px' })
+  card.appendChild(el('div', { class: 'row', style: 'margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line)' }, [
+    el('span', { class: 'hint' }, 'Presets:'),
+    selPreset,
+    presets.length ? el('button', { class: 'btn small', title: 'Cenas novas nascem com o preset padrão', onclick: async () => { if (!selPreset.value) return alert('Escolha um preset na lista.'); await api('/api/cenas', 'POST', { acao: 'preset-padrao', id: selPreset.value }); route() } }, 'tornar padrão') : null,
+    presets.length ? el('button', { class: 'btn small danger', onclick: async () => { if (!selPreset.value) return alert('Escolha um preset na lista.'); if (!confirm('Apagar este preset?')) return; await api('/api/cenas', 'POST', { acao: 'preset-apagar', id: selPreset.value }); route() } }, 'apagar') : null,
+    nomePreset,
+    el('button', { class: 'btn small', onclick: async () => { if (!nomePreset.value.trim()) return nomePreset.focus(); await api('/api/cenas', 'POST', { acao: 'preset-salvar', nome: nomePreset.value.trim(), cenaId: id }); route() } }, 'salvar visual desta cena como preset'),
+  ]))
+
+  const groups = new Map()
+  for (const [key, def] of Object.entries(fields)) {
+    if (def.type === 'button') continue // a prévia ao lado já mostra a tela
+    const g = def.group || 'Geral'
+    if (!groups.has(g)) groups.set(g, [])
+    groups.get(g).push([key, def])
+  }
+  let first = true
+  for (const [group, items] of groups) {
+    const d = el('details', first ? { open: '' } : {})
+    first = false
+    d.appendChild(el('summary', {}, group))
+    for (const [key, def] of items) d.appendChild(renderField('telas', key, def, values, save))
+    card.appendChild(d)
+  }
+  left.appendChild(card)
+
+  const right = el('div', { class: 'preview' })
+  const frame = el('div', { class: 'frame' })
+  iframe = el('iframe', { src: `/overlay/telas?cena=${encodeURIComponent(id)}&mostrar=1` })
+  frame.appendChild(iframe)
+  const fit = () => { iframe.style.transform = `scale(${frame.clientWidth / 1920})` }
+  new ResizeObserver(fit).observe(frame)
+  right.appendChild(el('div', { class: 'card' }, [
+    el('h2', {}, 'Prévia desta cena (1920 x 1080)'),
+    frame,
+    el('p', { class: 'hint', style: 'margin-top:12px' }, 'Mostra esta cena mesmo que outra esteja no ar. Atualiza ao salvar.'),
+  ]))
+
+  content.append(left, right)
+  fit()
+}
+
+/* ---------- widget (Dynamic Island etc.) ---------- */
+
+async function renderWidget(content, id) {
+  const [fields, cfg] = await Promise.all([api(`/api/widget/${id}/fields`), api(`/api/widget/${id}/config`)])
+  const values = { ...cfg.defaults, ...cfg.values }
+  const savedMsg = el('span', { class: 'saved' }, 'salvo e overlay recarregado')
+  const save = () => {
+    clearTimeout(saveTimer)
+    saveTimer = setTimeout(async () => { await api(`/api/widget/${id}/config`, 'POST', values); saved(savedMsg) }, 500)
+  }
+
+  const groups = new Map()
+  for (const [key, def] of Object.entries(fields)) {
+    const g = def.group || 'Geral'
+    if (!groups.has(g)) groups.set(g, [])
+    groups.get(g).push([key, def])
+  }
+
+  const left = el('div')
+  const card = el('div', { class: 'card' })
+  card.appendChild(el('div', { class: 'row', style: 'margin-bottom:8px' }, [
+    el('button', { class: 'btn danger small', onclick: async () => {
+      if (!confirm('Voltar todas as configurações deste widget para o padrão?')) return
+      await api(`/api/widget/${id}/config`, 'DELETE')
+      route()
+    } }, 'Restaurar padrões'),
+    savedMsg,
+  ]))
+  let first = true
+  for (const [group, items] of groups) {
+    const d = el('details', first ? { open: '' } : {})
+    first = false
+    d.appendChild(el('summary', {}, group))
+    for (const [key, def] of items) d.appendChild(renderField(id, key, def, values, save))
+    card.appendChild(d)
+  }
+  left.appendChild(card)
+
+  const right = el('div', { class: 'preview' })
+  const frame = el('div', { class: 'frame' })
+  let iframe = null
+  const fit = () => { if (iframe) iframe.style.transform = `scale(${frame.clientWidth / 1920})` }
+  const previaBtn = el('button', { class: 'btn small ghost' })
+  const aplicarPrevia = () => {
+    const oculta = prefer('previaOculta') === '1'
+    if (oculta && iframe) { iframe.remove(); iframe = null }
+    if (!oculta && !iframe) { iframe = el('iframe', { src: `/overlay/${id}` }); frame.appendChild(iframe); fit() }
+    frame.style.display = oculta ? 'none' : ''
+    previaBtn.textContent = oculta ? 'mostrar prévia' : 'ocultar prévia'
+  }
+  previaBtn.addEventListener('click', () => { prefer('previaOculta', prefer('previaOculta') === '1' ? '0' : '1'); aplicarPrevia() })
+  right.appendChild(el('div', { class: 'card' }, [
+    el('div', { class: 'head' }, [el('h2', {}, 'Prévia ao vivo (1920 x 1080)'), previaBtn]),
+    frame,
+    el('p', { class: 'hint', style: 'margin-top:12px' }, 'A prévia é o overlay de verdade: recebe o chat, os eventos e o som, e recarrega ao salvar. Com o OBS aberto, oculte-a para não duplicar.'),
+  ]))
+  aplicarPrevia()
+  new ResizeObserver(fit).observe(frame)
+
+  content.append(left, right)
+  fit()
+}
+
+/* ---------- um campo do FIELDS ---------- */
+
+function renderField(widgetId, key, def, values, save) {
+  const type = String(def.type || 'text').toLowerCase()
+  const label = def.label || key
+  const wrap = el('div', { class: 'field' })
+
+  if (type === 'hidden') { wrap.appendChild(el('div', { class: 'note' }, label)); return wrap }
+
+  if (type === 'button') {
+    wrap.appendChild(el('label', {}, label))
+    wrap.appendChild(el('button', { class: 'btn', onclick: () => api('/api/test', 'POST', { listener: 'event:test', event: { listener: 'widget-button', field: key, value: def.value } }) }, 'Executar'))
+    return wrap
+  }
+
+  wrap.appendChild(el('label', {}, label))
+  const set = v => { values[key] = v; save() }
+
+  if (type === 'dropdown') {
+    const sel = el('select', { onchange: e => set(e.target.value) })
+    for (const [v, text] of Object.entries(def.options || {})) sel.appendChild(el('option', { value: v, selected: String(values[key]) === v ? '' : undefined }, text))
+    wrap.appendChild(sel)
+  } else if (type === 'checkbox') {
+    wrap.appendChild(el('input', { type: 'checkbox', checked: values[key] ? '' : undefined, onchange: e => set(e.target.checked) }))
+  } else if (type === 'number') {
+    wrap.appendChild(el('input', { type: 'number', value: values[key] ?? '', min: def.min, max: def.max, step: def.step || 'any', onchange: e => set(Number(e.target.value)) }))
+  } else if (type === 'slider') {
+    // nivelador e número andam juntos: arrasta ou digita
+    const num = el('input', { type: 'number', value: values[key] ?? 0, min: def.min, max: def.max, step: def.step || 1, style: 'width:78px;flex:none' })
+    const range = el('input', { type: 'range', value: values[key] ?? 0, min: def.min ?? 0, max: def.max ?? 100, step: def.step || 1, style: 'flex:1' })
+    range.addEventListener('input', () => { num.value = range.value; set(Number(range.value)) })
+    num.addEventListener('change', () => { range.value = num.value; set(Number(num.value)) })
+    wrap.appendChild(el('div', { class: 'row', style: 'flex-wrap:nowrap' }, [range, num]))
+  } else if (type === 'colorpicker') {
+    const text = el('input', { type: 'text', value: values[key] ?? '' })
+    const isHex = /^#[0-9a-f]{6}$/i.test(text.value)
+    const color = el('input', { type: 'color', value: isHex ? text.value : '#000000' })
+    color.addEventListener('input', () => { text.value = color.value; set(color.value) })
+    text.addEventListener('change', () => { if (/^#[0-9a-f]{6}$/i.test(text.value)) color.value = text.value; set(text.value) })
+    wrap.appendChild(el('div', { class: 'color' }, [color, text]))
+  } else if (type === 'sound-input') {
+    const list = el('div', { class: 'sounds' })
+    const render = () => {
+      list.innerHTML = ''
+      const arr = Array.isArray(values[key]) ? values[key] : values[key] ? [values[key]] : []
+      for (const url of arr) {
+        list.appendChild(el('div', { class: 'sound-item' }, [
+          el('span', {}, decodeURIComponent(url.split('/').pop())),
+          el('button', { class: 'btn small', onclick: () => new Audio(url).play() }, '▶'),
+          el('button', { class: 'btn small danger', onclick: () => { set(arr.filter(u => u !== url)); render() } }, 'remover'),
+        ]))
+      }
+      list.appendChild(el('input', { type: 'file', accept: 'audio/*', multiple: def.multiple ? '' : undefined, onchange: async e => {
+        const cur = Array.isArray(values[key]) ? [...values[key]] : values[key] ? [values[key]] : []
+        for (const f of e.target.files) {
+          const r = await fetch(`/api/upload?name=${encodeURIComponent(f.name)}`, { method: 'POST', body: f })
+          const { url } = await r.json()
+          if (def.multiple) cur.push(url); else cur.splice(0, cur.length, url)
+        }
+        set(def.multiple ? cur : cur[0] || '')
+        render()
+      } }))
+    }
+    render()
+    wrap.appendChild(el('span', { class: 'hint' }, def.multiple ? 'vários arquivos, um aleatório toca' : 'um arquivo'))
+    wrap.appendChild(list)
+  } else if (type === 'image-input') {
+    const box = el('div', { class: 'sounds' })
+    const render = () => {
+      box.innerHTML = ''
+      const url = values[key] || ''
+      if (url) {
+        box.appendChild(el('div', { class: 'img-item' }, [
+          el('img', { src: url, alt: '' }),
+          el('span', { class: 'hint', style: 'flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap' }, decodeURIComponent(url.split('/').pop())),
+          el('button', { class: 'btn small danger', onclick: () => { set(''); render() } }, 'remover'),
+        ]))
+      }
+      box.appendChild(el('input', { type: 'file', accept: 'image/*', onchange: async e => {
+        const f = e.target.files[0]
+        if (!f) return
+        const r = await fetch(`/api/upload?name=${encodeURIComponent(f.name)}`, { method: 'POST', body: f })
+        const { url } = await r.json()
+        set(url)
+        render()
+      } }))
+    }
+    render()
+    wrap.appendChild(el('span', { class: 'hint' }, 'PNG, JPG, WEBP ou GIF; 1920 x 1080 fica perfeito'))
+    wrap.appendChild(box)
+  } else {
+    wrap.appendChild(el('input', { type: 'text', value: values[key] ?? '', onchange: e => set(e.target.value) }))
+  }
+  return wrap
+}
+
+init()
+</script>
+</body>
+</html>

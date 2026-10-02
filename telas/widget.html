@@ -1,0 +1,26 @@
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;900&display=swap" rel="stylesheet" />
+
+<!--
+  Tela de intervalo (uma cena). Camadas, de baixo para cima: template animado
+  (.tpl), imagem de fundo com opacidade (.fundo-img), texto (.conteudo), logo
+  (.logo, posicionada por porcentagem). Aparece com o evento `tela`
+  ({ tela: "on" | "none" }) ou pelos botões de teste. A fonte escolhida é
+  carregada do Google Fonts pelo widget.js.
+-->
+<div id="telas" class="telas" style="--transicao: {transicao}s">
+  <section
+    id="tela"
+    class="tela tpl-{template} anim-{animacao} contraste-{contraste} logo-{logoMostrar}"
+    style="--c1: {cor1}; --c2: {cor2}; --ct: {corTexto}; --fonte: '{fonte}'; --img: url('{fundo}'); --img-op: calc({fundoOpacidade} / 100); --titulo-px: {tamanhoTitulo}px; --sub-px: {tamanhoSub}px; --sub-gap: {subDistancia}px; --escala: calc({escalaTexto} / 100); --sombra-cor: {sombraCor}; --sombra-d: {sombraDistancia}px; --logo-w: {logoLargura}px; --logo-x: {logoX}; --logo-y: {logoY}; --logo-op: calc({logoOpacidade} / 100)"
+  >
+    <div class="tpl" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="fundo-img" aria-hidden="true"></div>
+    <div class="conteudo">
+      <h1 class="titulo" data-texto="{titulo}">{titulo}</h1>
+      <p class="sub">{subtitulo}</p>
+    </div>
+    <img class="logo" src="{logoImagem}" alt="" />
+  </section>
+</div>

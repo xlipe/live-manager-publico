@@ -1,0 +1,258 @@
+{
+  "testShowButton": {
+    "label": "Mostrar a tela (teste)",
+    "group": "Pré-visualização",
+    "type": "button",
+    "value": "telas"
+  },
+  "testHideButton": {
+    "label": "Esconder a tela (teste)",
+    "group": "Pré-visualização",
+    "type": "button",
+    "value": "telas"
+  },
+  "titulo": {
+    "label": "Título",
+    "group": "Tela",
+    "type": "text",
+    "value": "VOLTO JÁ"
+  },
+  "subtitulo": {
+    "label": "Subtítulo (pode ficar vazio)",
+    "group": "Tela",
+    "type": "text",
+    "value": "já já estou de volta"
+  },
+  "subDistancia": {
+    "label": "Distância do subtítulo até o título (px)",
+    "group": "Tela",
+    "type": "slider",
+    "value": 18,
+    "min": 0,
+    "max": 300,
+    "step": 2
+  },
+  "tamanhoSub": {
+    "label": "Tamanho do subtítulo (px)",
+    "group": "Tela",
+    "type": "slider",
+    "value": 44,
+    "min": 16,
+    "max": 160,
+    "step": 2
+  },
+  "template": {
+    "label": "Template animado",
+    "group": "Tela",
+    "type": "dropdown",
+    "value": "gradiente",
+    "options": {
+      "gradiente": "Gradiente fluido",
+      "ondas": "Ondas",
+      "estrelas": "Estrelas flutuando",
+      "grade-retro": "Synthwave (grade retrô)",
+      "neon": "Neon",
+      "blocos": "Blocos geométricos",
+      "minimal": "Minimalista",
+      "glitch": "Glitch de TV"
+    }
+  },
+  "animacao": {
+    "label": "Animação do texto",
+    "group": "Tela",
+    "type": "dropdown",
+    "value": "pulsar",
+    "options": {
+      "pulsar": "Pulsar",
+      "flutuar": "Flutuar",
+      "deslizar": "Deslizar (entra e sai)",
+      "digitando": "Digitando (máquina de escrever)",
+      "glitch": "Glitch",
+      "saltando": "Letras saltando",
+      "brilho": "Brilho passando",
+      "zoom": "Zoom respirando",
+      "nenhuma": "Sem animação"
+    }
+  },
+  "fonte": {
+    "label": "Fonte do título e do subtítulo",
+    "group": "Tela",
+    "type": "dropdown",
+    "value": "Outfit",
+    "options": {
+      "Outfit": "Outfit",
+      "Inter": "Inter",
+      "Bebas Neue": "Bebas Neue",
+      "Anton": "Anton",
+      "Oswald": "Oswald",
+      "Archivo Black": "Archivo Black",
+      "Bangers": "Bangers",
+      "Luckiest Guy": "Luckiest Guy",
+      "Bungee": "Bungee",
+      "Black Ops One": "Black Ops One",
+      "Orbitron": "Orbitron",
+      "Audiowide": "Audiowide",
+      "Press Start 2P": "Press Start 2P",
+      "VT323": "VT323",
+      "Silkscreen": "Silkscreen",
+      "Fredoka": "Fredoka",
+      "Baloo 2": "Baloo 2",
+      "Nunito": "Nunito",
+      "Poppins": "Poppins",
+      "Montserrat": "Montserrat",
+      "Cinzel": "Cinzel",
+      "Playfair Display": "Playfair Display",
+      "Abril Fatface": "Abril Fatface",
+      "Pacifico": "Pacifico",
+      "Lobster": "Lobster",
+      "Righteous": "Righteous",
+      "Rubik Mono One": "Rubik Mono One",
+      "Monoton": "Monoton",
+      "Permanent Marker": "Permanent Marker",
+      "Zen Maru Gothic": "Zen Maru Gothic",
+      "Mochiy Pop One": "Mochiy Pop One"
+    }
+  },
+  "cor1": {
+    "label": "Cor principal",
+    "group": "Tela",
+    "type": "colorpicker",
+    "value": "#8b7cff"
+  },
+  "cor2": {
+    "label": "Cor secundária",
+    "group": "Tela",
+    "type": "colorpicker",
+    "value": "#3ef2d0"
+  },
+  "corTexto": {
+    "label": "Cor do texto",
+    "group": "Tela",
+    "type": "colorpicker",
+    "value": "#ffffff"
+  },
+  "contraste": {
+    "label": "Legibilidade do texto",
+    "group": "Tela",
+    "type": "dropdown",
+    "value": "sombra-dura",
+    "options": {
+      "sombra-suave": "Sombra suave (com blur)",
+      "sombra-dura": "Sombra projetada (sem blur)",
+      "sombra-longa": "Sombra longa projetada",
+      "placa-escura": "Placa escura atrás do texto",
+      "placa-clara": "Placa clara atrás do texto",
+      "contorno": "Contorno grosso nas letras",
+      "nenhum": "Sem reforço"
+    }
+  },
+  "sombraCor": {
+    "label": "Cor da sombra",
+    "group": "Tela",
+    "type": "colorpicker",
+    "value": "#000000"
+  },
+  "sombraDistancia": {
+    "label": "Distância da sombra (px)",
+    "group": "Tela",
+    "type": "slider",
+    "value": 8,
+    "min": 1,
+    "max": 40,
+    "step": 1
+  },
+  "fundo": {
+    "label": "Imagem de fundo (fica atrás do texto)",
+    "group": "Tela",
+    "type": "image-input",
+    "value": ""
+  },
+  "fundoOpacidade": {
+    "label": "Opacidade da imagem (%)",
+    "group": "Tela",
+    "type": "slider",
+    "value": 25,
+    "min": 0,
+    "max": 100,
+    "step": 5
+  },
+  "escalaTexto": {
+    "label": "Escala do conjunto título + subtítulo (%)",
+    "group": "Tela",
+    "type": "slider",
+    "value": 100,
+    "min": 25,
+    "max": 300,
+    "step": 5
+  },
+  "tamanhoTitulo": {
+    "label": "Tamanho do título (px)",
+    "group": "Tela",
+    "type": "slider",
+    "value": 150,
+    "min": 40,
+    "max": 400,
+    "step": 2
+  },
+  "transicao": {
+    "label": "Transição ao mostrar/esconder (segundos)",
+    "group": "Tela",
+    "type": "number",
+    "value": 0.6,
+    "min": 0,
+    "max": 3,
+    "step": 0.1
+  },
+  "logoMostrar": {
+    "label": "Mostrar a logo",
+    "group": "Logo",
+    "type": "dropdown",
+    "value": "true",
+    "options": {
+      "true": "Sim",
+      "false": "Não"
+    }
+  },
+  "logoImagem": {
+    "label": "Imagem da logo (padrão: ravoque em branco)",
+    "group": "Logo",
+    "type": "image-input",
+    "value": "/marca/ravoque-branco.png"
+  },
+  "logoLargura": {
+    "label": "Largura da logo (px)",
+    "group": "Logo",
+    "type": "slider",
+    "value": 260,
+    "min": 60,
+    "max": 1200,
+    "step": 10
+  },
+  "logoX": {
+    "label": "Posição horizontal (0 = esquerda, 100 = direita)",
+    "group": "Logo",
+    "type": "slider",
+    "value": 50,
+    "min": 0,
+    "max": 100,
+    "step": 1
+  },
+  "logoY": {
+    "label": "Posição vertical (0 = topo, 100 = base)",
+    "group": "Logo",
+    "type": "slider",
+    "value": 88,
+    "min": 0,
+    "max": 100,
+    "step": 1
+  },
+  "logoOpacidade": {
+    "label": "Opacidade da logo (%)",
+    "group": "Logo",
+    "type": "slider",
+    "value": 90,
+    "min": 0,
+    "max": 100,
+    "step": 5
+  }
+}
